@@ -3,7 +3,7 @@ from app import App
 
 
 class Text:
-    def __init__(self, text, pos, **options):
+    def __init__(self, text, pos):
         self.text = text
         self.pos = pos
 
