@@ -15,7 +15,7 @@ class SceneBase:
         print("Bruh, you didn't override 'Update' in the child class")
 
     # NOTE: Put your render code here. It will receive the main screen Surface as input.
-    def Render(self, screen):
+    def Render(self):
         print("Bruh, you didn't override 'Render' in the child class")
 
     def SwitchToScene(self, next_scene):

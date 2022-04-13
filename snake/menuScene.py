@@ -18,7 +18,7 @@ class MenuScene(SceneBase):
     def Update(self):
         pass
 
-    def Render(self, screen):
-        screen.fill(pygame.Color("Red"))
+    def Render(self):
+        App.screen.fill(pygame.Color("Red"))
         t = Text("Menu", (150, 150))
         t.draw()

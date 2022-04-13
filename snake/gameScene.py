@@ -15,8 +15,8 @@ class GameScene(SceneBase):
         # TODO: Game Logique Update
         pass
 
-    def Render(self, screen):
+    def Render(self):
         # TODO: Game Render
-        screen.fill(pygame.Color("Blue"))
+        App.screen.fill(pygame.Color("Blue"))
         t = Text("Game", (150, 150))
         t.draw()

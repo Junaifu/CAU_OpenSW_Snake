@@ -47,7 +47,7 @@ class App:
                     filtered_events.append(event)
             self.currentScene.ProcessInput(filtered_events, pressed_keys)
             self.currentScene.Update()
-            self.currentScene.Render(App.screen)
+            self.currentScene.Render()
             self.currentScene = self.currentScene.next
             pygame.display.flip()
             App.clock.tick(App.fps)
