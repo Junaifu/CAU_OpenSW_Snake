@@ -9,7 +9,7 @@ class Text:
 
         self.fontname = None
         self.fontsize = 72
-        self.fontcolor = pygame.Color('black')
+        self.fontcolor = pygame.Color('white')
         self.set_font()
         self.render()
 

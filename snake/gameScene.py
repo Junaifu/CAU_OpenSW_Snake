@@ -1,8 +1,11 @@
 from sceneBase import SceneBase
 from utils import *
+from gameMap import GameMap
 
 
 class GameScene(SceneBase):
+    gameMap = GameMap()
+
     def __init__(self):
         SceneBase.__init__(self)
         pygame.display.set_caption("Snake")
@@ -17,6 +20,7 @@ class GameScene(SceneBase):
 
     def Render(self):
         # TODO: Game Render
-        App.screen.fill(pygame.Color("Blue"))
-        t = Text("Game", (150, 150))
+        App.screen.fill(pygame.Color("Black"))
+        t = Text("Score: 0", (450, 30))
         t.draw()
+        self.gameMap.render()
