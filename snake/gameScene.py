@@ -20,7 +20,7 @@ class GameScene(SceneBase):
 
     def Render(self):
         # TODO: Game Render
-        App.screen.fill(pygame.Color(3, 187, 0))
+        App.screen.fill(pygame.Color("Black"))
         t = Text("Score: 0", (450, 30))
         t.draw()
         self.gameMap.render()
