@@ -2,6 +2,7 @@ from sceneBase import SceneBase
 from utils import *
 from gameMap import GameMap
 from inGameMenuScene import InGameMenuScene
+from snakeBody import Direction
 
 class GameScene(SceneBase):
     gameMap = GameMap()
@@ -11,14 +12,20 @@ class GameScene(SceneBase):
         pygame.display.set_caption("Snake")
 
     def ProcessInput(self, events, pressed_keys):
-        for event in events:
-            if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
-                # Move to in game menu scene when the user presses Escape
-                self.SwitchToScene(InGameMenuScene())
+        if pressed_keys[pygame.K_ESCAPE]:
+            # Move to in game menu scene when the user presses Escape
+            self.SwitchToScene(InGameMenuScene())
+        elif pressed_keys[pygame.K_LEFT]:
+            self.gameMap.snake.changeDirection(Direction.WEST)
+        elif pressed_keys[pygame.K_RIGHT]:
+            self.gameMap.snake.changeDirection(Direction.EAST)
+        elif pressed_keys[pygame.K_UP]:
+            self.gameMap.snake.changeDirection(Direction.NORTH)
+        elif pressed_keys[pygame.K_DOWN]:
+            self.gameMap.snake.changeDirection(Direction.SOUTH)
 
     def Update(self):
-        # TODO: Game Logique Update
-        pass
+        self.gameMap.snake.move()
 
     def Render(self):
         # TODO: Game Render

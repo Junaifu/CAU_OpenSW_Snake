@@ -27,6 +27,7 @@ class App:
         #     (0, 0), pygame.FULLSCREEN)
 
     def run(self):
+        time = 0
         while self.currentScene != None:
             filtered_events = []
             pressed_keys = pygame.key.get_pressed()
@@ -44,8 +45,10 @@ class App:
                 else:
                     filtered_events.append(event)
             self.currentScene.ProcessInput(filtered_events, pressed_keys)
-            self.currentScene.Update()
+            if time >= 60:
+                self.currentScene.Update()
+                time = 0
             self.currentScene.Render()
             self.currentScene = self.currentScene.next
             pygame.display.flip()
-            App.clock.tick(App.fps)
+            time += App.clock.tick(App.fps)
