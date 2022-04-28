@@ -1,7 +1,6 @@
 from app import App
 import pygame
 
-
 class SceneBase:
     def __init__(self):
         self.next = self

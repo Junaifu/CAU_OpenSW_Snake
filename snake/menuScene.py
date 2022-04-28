@@ -3,7 +3,6 @@ from gameScene import GameScene
 from utils import *
 import pygame
 
-
 class MenuScene(SceneBase):
     def __init__(self):
         SceneBase.__init__(self)
