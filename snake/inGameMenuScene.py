@@ -1,5 +1,6 @@
+import pygame
+from app import App
 from sceneBase import SceneBase
-from utils import *
 from gameMap import GameMap
 from button import Button
 
