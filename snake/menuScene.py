@@ -1,7 +1,8 @@
+import pygame
+from app import App
 from sceneBase import SceneBase
 from gameScene import GameScene
-from utils import *
-import pygame
+from utils import Text
 
 class MenuScene(SceneBase):
     def __init__(self):
