@@ -1,7 +1,7 @@
 from sceneBase import SceneBase
 from utils import *
 from gameMap import GameMap
-
+from inGameMenuScene import InGameMenuScene
 
 class GameScene(SceneBase):
     gameMap = GameMap()
@@ -11,8 +11,10 @@ class GameScene(SceneBase):
         pygame.display.set_caption("Snake")
 
     def ProcessInput(self, events, pressed_keys):
-        # TODO: Game Controller
-        pass
+        for event in events:
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
+                # Move to in game menu scene when the user presses Escape
+                self.SwitchToScene(InGameMenuScene())
 
     def Update(self):
         # TODO: Game Logique Update
