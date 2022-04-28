@@ -1,5 +1,6 @@
 from enum import Enum
 import pygame
+from snakeBody import SnakeBody, Direction
 
 class MapTile(Enum):
     EMPTY = 1
@@ -17,10 +18,33 @@ class GameMap:
     surface = pygame.display.set_mode((mapSizeX * tileSize, mapSizeY * tileSize))
     mapBeginningX = (1080 - mapSizeX * tileSize) / 2
     mapBeginningY = 100
+    snake = SnakeBody(mapSizeX / 2, mapSizeY / 2, Direction.NORTH, [(int(mapSizeX / 2), int(mapSizeY / 2 + 1)), (int(mapSizeX / 2), int(mapSizeY / 2 + 2))])
     wallColor = (127, 127, 127)
     emptyColor = (9, 0, 99)
+    headColor = (29, 135, 37)
+    bodyColor = (5, 228, 0)
 
     def __init__(self):
+        self.clearMap()
+    
+    def render(self):
+        self.clearMap()
+        self.putSnakeOnMap()
+        for i in range(self.mapSizeX):
+            for j in range(self.mapSizeY):
+                if self.mapContent[i][j] == MapTile.WALL:
+                    color = GameMap.wallColor
+                elif self.mapContent[i][j] == MapTile.HEAD:
+                    color = GameMap.headColor
+                elif self.mapContent[i][j] == MapTile.BODY:
+                    color = GameMap.bodyColor
+                else:
+                    color = GameMap.emptyColor
+                tileX = GameMap.mapBeginningX + i * GameMap.tileSize
+                tileY = GameMap.mapBeginningY + j * GameMap.tileSize
+                pygame.draw.rect(self.surface, color, pygame.Rect(tileX, tileY, GameMap.tileSize, GameMap.tileSize))
+    
+    def clearMap(self):
         for i in range(self.mapSizeX):
             self.mapContent[i] = [None] * self.mapSizeY
             for j in range(self.mapSizeY):
@@ -28,14 +52,8 @@ class GameMap:
                     self.mapContent[i][j] = MapTile.WALL
                 else:
                     self.mapContent[i][j] = MapTile.EMPTY
-    
-    def render(self):
-        for i in range(self.mapSizeX):
-            for j in range(self.mapSizeY):
-                if self.mapContent[i][j] == MapTile.WALL:
-                    color = GameMap.wallColor
-                else:
-                    color = GameMap.emptyColor
-                tileX = GameMap.mapBeginningX + i * GameMap.tileSize
-                tileY = GameMap.mapBeginningY + j * GameMap.tileSize
-                pygame.draw.rect(self.surface, color, pygame.Rect(tileX, tileY, GameMap.tileSize, GameMap.tileSize))
+
+    def putSnakeOnMap(self):
+        self.mapContent[self.snake.x][self.snake.y] = MapTile.HEAD
+        for part in self.snake.bodyParts:
+            self.mapContent[part[0]][part[1]] = MapTile.BODY
