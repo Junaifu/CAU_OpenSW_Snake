@@ -26,7 +26,7 @@ class InGameMenuScene(SceneBase):
                     elif self.saveButton.rect.collidepoint(x,y):
                         print("save")
                     elif self.exitButton.rect.collidepoint(x,y):
-                        print("exit")
+                        self.Terminate()
 
     def Update(self):
         # TODO: Game Logique Update
