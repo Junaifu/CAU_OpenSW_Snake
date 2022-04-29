@@ -21,6 +21,7 @@ class InGameMenuScene(SceneBase):
                 x, y = pygame.mouse.get_pos()
                 if pygame.mouse.get_pressed()[0]:
                     if self.resumeButton.rect.collidepoint(x,y):
+                        App.isPaused = False
                         print("resume")
                     elif self.restartButton.rect.collidepoint(x,y):
                         print("restart")
