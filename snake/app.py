@@ -45,7 +45,7 @@ class App:
                 else:
                     filtered_events.append(event)
             self.currentScene.ProcessInput(filtered_events, pressed_keys)
-            if time >= 60:
+            if time >= self.fps:
                 self.currentScene.Update()
                 time = 0
             self.currentScene.Render()

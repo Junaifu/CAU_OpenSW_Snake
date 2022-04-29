@@ -47,12 +47,9 @@ class SnakeBody:
                 self.bodyParts[i] = (self.bodyParts[i - 1][0], self.bodyParts[i - 1][1])
     
     def changeDirection(self, newDirection):
-        if newDirection == Direction.NORTH and self.direction == Direction.SOUTH:
-            return
-        if newDirection == Direction.SOUTH and self.direction == Direction.NORTH:
-            return
-        if newDirection == Direction.WEST and self.direction == Direction.EAST:
-            return
-        if newDirection == Direction.EAST and self.direction == Direction.WEST:
+        if (newDirection == Direction.NORTH and self.direction == Direction.SOUTH or
+            newDirection == Direction.SOUTH and self.direction == Direction.NORTH or
+            newDirection == Direction.WEST and self.direction == Direction.EAST or
+            newDirection == Direction.EAST and self.direction == Direction.WEST):
             return
         self.direction = newDirection
