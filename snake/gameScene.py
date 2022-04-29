@@ -1,4 +1,5 @@
 from sceneBase import SceneBase
+from gameOverScene import GameOverScene
 from utils import *
 from gameMap import GameMap
 from snakeBody import Direction
@@ -22,6 +23,9 @@ class GameScene(SceneBase):
 
     def Update(self):
         self.gameMap.snake.move()
+        if self.gameMap.checkCollision() == True:
+            self.gameMap.render()
+            self.SwitchToScene(GameOverScene())
 
     def Render(self):
         # TODO: Game Render

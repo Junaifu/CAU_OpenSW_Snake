@@ -53,3 +53,9 @@ class SnakeBody:
             newDirection == Direction.EAST and self.direction == Direction.WEST):
             return
         self.direction = newDirection
+    
+    def checkBodyCollision(self):
+        for part in self.bodyParts:
+            if part[0] == self.x and part[1] == self.y:
+                return True
+        return False

@@ -54,6 +54,12 @@ class GameMap:
                     self.mapContent[i][j] = MapTile.EMPTY
 
     def putSnakeOnMap(self):
-        self.mapContent[self.snake.x][self.snake.y] = MapTile.HEAD
         for part in self.snake.bodyParts:
             self.mapContent[part[0]][part[1]] = MapTile.BODY
+        self.mapContent[self.snake.x][self.snake.y] = MapTile.HEAD
+    
+    def checkCollision(self):
+        if self.mapContent[self.snake.x][self.snake.y] == MapTile.WALL or self.snake.checkBodyCollision() == True:
+            self.putSnakeOnMap()
+            return True
+        return False
