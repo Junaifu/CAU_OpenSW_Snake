@@ -1,6 +1,5 @@
 import pygame
 
-
 class App:
     screen = None
     clock = None
@@ -13,6 +12,7 @@ class App:
     def __init__(self, x, y, scene):
         pygame.init()
         pygame.font.init()
+        pygame.mouse.set_visible(False) 
         self.flags = pygame.RESIZABLE
         self.snakeFont = pygame.font.SysFont('Comic Sans MS', 30)
         App.screenSizeX = x
@@ -21,6 +21,7 @@ class App:
             (App.screenSizeX, App.screenSizeY), self.flags)
         App.screen.fill(pygame.Color('gray'))
         App.clock = pygame.time.Clock()
+        scene.initMenu()
         self.currentScene = scene
         # NOTE: Do not delete
         # self.screen = pygame.display.set_mode(
