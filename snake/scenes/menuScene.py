@@ -1,5 +1,6 @@
 from scenes.sceneBase import SceneBase
 from scenes.gameScene import GameScene
+from scenes.rankingScene import RankingScene
 from utils.button import Button
 from utils.text import Text
 from app import App
@@ -38,15 +39,15 @@ class MenuScene(SceneBase):
             self.stars, (App.screenSizeX, self.height))
         self.stars2 = pygame.transform.scale(
             self.stars2, (App.screenSizeX, self.height))
-        self.firstStarsIndex = -720
-        self.secondStarsIndex = -720
+        self.firstStarsIndex = -App.screenSizeY
+        self.secondStarsIndex = -App.screenSizeY
         self.playButton = Button(
             "PLAY", App.screenSizeX / 2, 150, self.playButtonCallback)
         self.loadButton = Button(
             "LOAD", App.screenSizeX / 2, 250, self.loadButtonCallback)
         # TODO: redirect to ranking screen
         self.rankingButton = Button(
-            "RANKING", App.screenSizeX / 2, 350, lambda x: print("Redirect to Ranking Screen"))
+            "RANKING", App.screenSizeX / 2, 350, lambda x: self.SwitchToScene(RankingScene()))
         self.exitButton = Button(
             "EXIT", App.screenSizeX / 2, 450, (lambda params: self.Terminate()))
 
@@ -61,13 +62,13 @@ class MenuScene(SceneBase):
         if (self.firstStarsIndex >= 0):
             App.screen.blit(
                 self.stars, (0, self.height + self.firstStarsIndex))
-            self.firstStarsIndex = -720
+            self.firstStarsIndex = -App.screenSizeY
         self.firstStarsIndex += 2
 
         if (self.secondStarsIndex >= 0):
             App.screen.blit(
                 self.stars2, (0, self.height + self.secondStarsIndex))
-            self.secondStarsIndex = -720
+            self.secondStarsIndex = -App.screenSizeY
         self.secondStarsIndex += 1
         pass
 
