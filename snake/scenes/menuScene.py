@@ -32,13 +32,13 @@ class MenuScene(SceneBase):
         self.SwitchToScene(GameScene())
 
     def initMenu(self):
-        self.height = App.screenSizeY
+        App.screenSizeY = App.screenSizeY
         self.background = pygame.transform.scale(
             self.background, (App.screenSizeX, App.screenSizeY))
         self.stars = pygame.transform.scale(
-            self.stars, (App.screenSizeX, self.height))
+            self.stars, (App.screenSizeX, App.screenSizeY))
         self.stars2 = pygame.transform.scale(
-            self.stars2, (App.screenSizeX, self.height))
+            self.stars2, (App.screenSizeX, App.screenSizeY))
         self.firstStarsIndex = -App.screenSizeY
         self.secondStarsIndex = -App.screenSizeY
         self.playButton = Button(
@@ -61,13 +61,13 @@ class MenuScene(SceneBase):
     def Update(self):
         if (self.firstStarsIndex >= 0):
             App.screen.blit(
-                self.stars, (0, self.height + self.firstStarsIndex))
+                self.stars, (0, App.screenSizeY + self.firstStarsIndex))
             self.firstStarsIndex = -App.screenSizeY
         self.firstStarsIndex += 2
 
         if (self.secondStarsIndex >= 0):
             App.screen.blit(
-                self.stars2, (0, self.height + self.secondStarsIndex))
+                self.stars2, (0, App.screenSizeY + self.secondStarsIndex))
             self.secondStarsIndex = -App.screenSizeY
         self.secondStarsIndex += 1
         pass
@@ -75,9 +75,11 @@ class MenuScene(SceneBase):
     def Render(self):
         App.screen.blit(self.background, (0, 0))
         App.screen.blit(self.stars, (0, self.firstStarsIndex))
-        App.screen.blit(self.stars, (0, self.height + self.firstStarsIndex))
+        App.screen.blit(
+            self.stars, (0, App.screenSizeY + self.firstStarsIndex))
         App.screen.blit(self.stars2, (0, self.secondStarsIndex))
-        App.screen.blit(self.stars2, (0, self.height + self.secondStarsIndex))
+        App.screen.blit(
+            self.stars2, (0, App.screenSizeY + self.secondStarsIndex))
         t = Text("Menu", (150, 150))
         t.draw()
         self.playButton.draw()
