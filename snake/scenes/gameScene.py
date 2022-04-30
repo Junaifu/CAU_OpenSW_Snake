@@ -1,7 +1,8 @@
-from sceneBase import SceneBase
-from utils import *
+from scenes.sceneBase import *
+from utils.text import Text
 from gameMap import GameMap
 from snakeBody import Direction
+
 
 class GameScene(SceneBase):
     gameMap = GameMap()
