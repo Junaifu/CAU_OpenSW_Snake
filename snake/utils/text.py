@@ -1,5 +1,6 @@
 import pygame
 from app import App
+import os
 
 
 class Text:
@@ -8,13 +9,11 @@ class Text:
         self.pos = pos
 
         self.fontname = None
-        self.fontsize = 72
         self.fontcolor = pygame.Color('white')
-        self.set_font()
+        self.font = pygame.font.Font(os.path.join(
+            "..", "fonts", 'PublicPixel.ttf'),
+            42)
         self.render()
-
-    def set_font(self):
-        self.font = pygame.font.Font(self.fontname, self.fontsize)
 
     def render(self):
         self.img = self.font.render(self.text, True, self.fontcolor)
