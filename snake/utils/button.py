@@ -47,7 +47,7 @@ class Button:
         self.surface.blit(self.text, (0, 0))
         self.rect = pygame.Rect(self.x, self.y, self.size[0], self.size[1])
 
-    def show(self):
+    def draw(self):
         App.screen.blit(self.surface, (self.x, self.y))
 
     def event(self, event):

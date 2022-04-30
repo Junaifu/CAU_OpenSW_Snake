@@ -6,10 +6,6 @@ from app import App
 import pygame
 
 
-def test():
-    print("GHello")
-
-
 class MenuScene(SceneBase):
     background = pygame.image.load('../resources/bg.png')
     stars = pygame.image.load('../resources/Stars Small_1.png')
@@ -22,7 +18,6 @@ class MenuScene(SceneBase):
     loadButton = None
     rankingButton = None
     exitButton = None
-    hello_button = None
 
     def __init__(self):
         SceneBase.__init__(self)
@@ -31,6 +26,7 @@ class MenuScene(SceneBase):
     def playButtonCallback(self, params):
         self.SwitchToScene(GameScene())
 
+    # TODO: redirect to LoadFiles screen
     def loadButtonCallback(self, params):
         self.SwitchToScene(GameScene())
 
@@ -48,8 +44,9 @@ class MenuScene(SceneBase):
             "PLAY", App.screenSizeX / 2, 150, self.playButtonCallback)
         self.loadButton = Button(
             "LOAD", App.screenSizeX / 2, 250, self.loadButtonCallback)
+        # TODO: redirect to ranking screen
         self.rankingButton = Button(
-            "RANKING", App.screenSizeX / 2, 350, lambda x: print("Hello"))
+            "RANKING", App.screenSizeX / 2, 350, lambda x: print("Redirect to Ranking Screen"))
         self.exitButton = Button(
             "EXIT", App.screenSizeX / 2, 450, (lambda params: self.Terminate()))
 
@@ -59,9 +56,6 @@ class MenuScene(SceneBase):
             self.loadButton.event(event)
             self.rankingButton.event(event)
             self.exitButton.event(event)
-            if event.type == pygame.KEYDOWN and event.key == pygame.K_RETURN:
-                # Move to the next scene when the user pressed Enter
-                self.SwitchToScene(GameScene())
 
     def Update(self):
         if (self.firstStarsIndex >= 0):
@@ -85,7 +79,7 @@ class MenuScene(SceneBase):
         App.screen.blit(self.stars2, (0, self.height + self.secondStarsIndex))
         t = Text("Menu", (150, 150))
         t.draw()
-        self.playButton.show()
-        self.loadButton.show()
-        self.rankingButton.show()
-        self.exitButton.show()
+        self.playButton.draw()
+        self.loadButton.draw()
+        self.rankingButton.draw()
+        self.exitButton.draw()
