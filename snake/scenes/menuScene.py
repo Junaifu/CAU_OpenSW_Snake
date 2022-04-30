@@ -32,7 +32,6 @@ class MenuScene(SceneBase):
         self.SwitchToScene(GameScene())
 
     def initMenu(self):
-        App.screenSizeY = App.screenSizeY
         self.background = pygame.transform.scale(
             self.background, (App.screenSizeX, App.screenSizeY))
         self.stars = pygame.transform.scale(
