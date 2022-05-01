@@ -18,10 +18,7 @@ class SnakeBody:
         self.y = int(posY)
         self.direction = snakeDir
         self.bodyParts = parts
-        length = 0
-        for part in parts:
-            length += 1
-        self.size = length
+        self.size = len(parts)
     
     def move(self, appleX, appleY):
         oldX = self.x
@@ -39,10 +36,8 @@ class SnakeBody:
         return isOnApple
     
     def moveBody(self, oldX, oldY, isOnApple):
-        length = 0
+        length = len(self.bodyParts)
         newPart = (0, 0)
-        for part in self.bodyParts:
-            length += 1
         if length == 0:
             newPart = (oldX, oldY)
         for i in range(length - 1, -1, -1):

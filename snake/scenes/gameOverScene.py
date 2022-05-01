@@ -9,6 +9,7 @@ import pygame
 class GameOverScene(SceneBase):
     score = 0
     textInput = None
+    playAgainButton = None
     mainMenuButton = None
 
     background = pygame.image.load('resources/bg.png')
@@ -24,6 +25,8 @@ class GameOverScene(SceneBase):
         self.textInput = TextInput(340, 400, (430, 70))
         self.mainMenuButton = Button(
             "BACK TO MAIN MENU", 340, 600, self.mainMenuCallback)
+        self.playAgainButton = Button(
+            "PLAY AGAIN", 420, 550, self.playAgainCallback)
         self.background = pygame.transform.scale(
             self.background, (App.screenSizeX, App.screenSizeY))
         self.stars = pygame.transform.scale(
@@ -36,12 +39,16 @@ class GameOverScene(SceneBase):
     def mainMenuCallback(self, params):
         self.SwitchToScene(scenes.menuScene.MenuScene())
         # TODO ranking
+    
+    def playAgainCallback(self, params):
+        self.SwitchToScene(scenes.gameScene.GameScene())
 
     def ProcessInput(self, events, pressed_keys):
         for event in events:
             self.textInput.ProcessInput(event, pressed_keys)
             self.textInput.event(event)
             self.mainMenuButton.event(event)
+            self.playAgainButton.event(event)
 
     def Update(self):
         if (self.firstStarsIndex >= 0):
@@ -71,3 +78,4 @@ class GameOverScene(SceneBase):
         playerNameText.draw()
         self.textInput.draw()
         self.mainMenuButton.draw()
+        self.playAgainButton.draw()
