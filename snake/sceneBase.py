@@ -1,8 +1,9 @@
-from app import App
 import pygame
+from app import App
 
 class SceneBase:
-    def __init__(self):
+    def __init__(self, previous = None):
+        self.previous = previous
         self.next = self
 
     # NOTE: This method will receive all the events that happened since the last frame.
@@ -29,6 +30,9 @@ class SceneBase:
             pygame.time.delay(25)
         # for alpha in range (fade.get_alpha(), 0, -1):
         self.next = next_scene
+
+    def SwitchToPreviousScene(self):
+        self.SwitchToScene(self.previous)
 
     def Terminate(self):
         self.SwitchToScene(None)
