@@ -8,9 +8,9 @@ import pygame
 
 
 class MenuScene(SceneBase):
-    background = pygame.image.load('../resources/bg.png')
-    stars = pygame.image.load('../resources/Stars Small_1.png')
-    stars2 = pygame.image.load('../resources/Stars-Big_1_1_PC.png')
+    background = pygame.image.load('resources/bg.png')
+    stars = pygame.image.load('resources/Stars Small_1.png')
+    stars2 = pygame.image.load('resources/Stars-Big_1_1_PC.png')
     firstStarsIndex = 0
     secondStarsIndex = 0
 

@@ -9,7 +9,7 @@ class App:
     snakeFont = None
     currentScene = None
     fps = 60
-    rankingPathfile = "../resources/rankings.txt"
+    rankingPathfile = "resources/rankings.txt"
 
     def __init__(self, x, y, scene):
         pygame.init()
