@@ -13,7 +13,6 @@ class MenuScene(SceneBase):
     stars2 = pygame.image.load('../resources/Stars-Big_1_1_PC.png')
     firstStarsIndex = 0
     secondStarsIndex = 0
-    height = 0
 
     playButton = None
     loadButton = None
@@ -23,6 +22,8 @@ class MenuScene(SceneBase):
     def __init__(self):
         SceneBase.__init__(self)
         pygame.display.set_caption("Menu")
+        if (App.screenSizeX != None):
+            self.initMenu()
 
     def playButtonCallback(self, params):
         self.SwitchToScene(GameScene())
@@ -44,7 +45,6 @@ class MenuScene(SceneBase):
             "PLAY", App.screenSizeX / 2, 150, self.playButtonCallback)
         self.loadButton = Button(
             "LOAD", App.screenSizeX / 2, 250, self.loadButtonCallback)
-        # TODO: redirect to ranking screen
         self.rankingButton = Button(
             "RANKING", App.screenSizeX / 2, 350, lambda x: self.SwitchToScene(RankingScene()))
         self.exitButton = Button(
