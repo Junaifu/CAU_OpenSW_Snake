@@ -40,8 +40,7 @@ class GameScene(SceneBase):
             self.SwitchToScene(GameOverScene(self.score))
 
     def Render(self):
-        # TODO: Game Render
         App.screen.fill(pygame.Color("Black"))
-        t = Text("Score: " + str(self.score), (450, 30))
+        t = Text("Score: " + str(self.score), (400, 30))
         t.draw()
         self.gameMap.render()
