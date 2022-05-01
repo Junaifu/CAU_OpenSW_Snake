@@ -31,6 +31,14 @@ class GameMap:
     def __init__(self):
         self.clearMap()
 
+    def setMap(self, mapContent, mapSizeX, mapSizeY):
+        self.mapContent = mapContent
+        self.mapSizeX = mapSizeX
+        self.mapSizeY = mapSizeY
+
+    def setSnake(self, snake):
+        self.snake = snake
+
     def render(self):
         self.clearMap()
         self.putSnakeOnMap()
@@ -51,6 +59,9 @@ class GameMap:
                 tileY = GameMap.mapBeginningY + j * GameMap.tileSize
                 pygame.draw.rect(self.surface, color, pygame.Rect(tileX, tileY, GameMap.tileSize, GameMap.tileSize))
 
+    def resetGame(self):
+        self.snake = SnakeBody(self.mapSizeX / 2, self.mapSizeY / 2, Direction.NORTH, [])
+
     def clearMap(self):
         for i in range(self.mapSizeX):
             self.mapContent[i] = [None] * self.mapSizeY
@@ -63,9 +74,15 @@ class GameMap:
                     self.mapContent[i][j] = MapTile.EMPTY
 
     def putSnakeOnMap(self):
-        self.mapContent[self.snake.x][self.snake.y] = MapTile.HEAD
         for part in self.snake.bodyParts:
             self.mapContent[part[0]][part[1]] = MapTile.BODY
+        self.mapContent[self.snake.x][self.snake.y] = MapTile.HEAD
+    
+    def checkCollision(self):
+        if self.mapContent[self.snake.x][self.snake.y] == MapTile.WALL or self.snake.checkBodyCollision() == True:
+            self.putSnakeOnMap()
+            return True
+        return False
 
     ## Apple
 
