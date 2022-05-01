@@ -13,8 +13,8 @@ class InGameMenuScene(SceneBase):
     score = None
     filePath = "backup_files/"
 
-    def __init__(self, previousScene, gameMap, score):
-        SceneBase.__init__(self, previousScene)
+    def __init__(self, gameMap, score):
+        SceneBase.__init__(self)
         pygame.display.set_caption("Snake in-game menu")
         self.gameMap = gameMap
         self.score = score
@@ -28,9 +28,10 @@ class InGameMenuScene(SceneBase):
 
     def goBackToGame(self, params):
         App.isPaused = False
-        if not params[0]:
-            print("resume")
-        self.SwitchToPreviousScene()
+        if not params[0]: # resume the game
+            self.SwitchToScene(scenes.gameScene.GameScene(self.score, self.gameMap))
+        else:
+            self.SwitchToScene(scenes.gameScene.GameScene())
 
     def saveBackup(self):
         isExist = os.path.exists(self.filePath)

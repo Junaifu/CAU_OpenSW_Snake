@@ -10,16 +10,16 @@ class GameScene(SceneBase):
     gameMap = None
     score = 0
 
-    def __init__(self):
+    def __init__(self, score = 0, map = None):
         SceneBase.__init__(self)
         pygame.display.set_caption("Snake")
-        self.score = 0
-        self.gameMap = GameMap()
+        self.score = score
+        self.gameMap = map if map else GameMap()
 
     def ProcessInput(self, events, pressed_keys):
         if pressed_keys[pygame.K_ESCAPE]:
             # Move to in game menu scene when the user presses Escape
-            self.SwitchToScene(InGameMenuScene(GameScene(), self.gameMap, self.score))
+            self.SwitchToScene(InGameMenuScene(self.gameMap, self.score))
             # Pause the game
             App.isPaused = True
         elif pressed_keys[pygame.K_LEFT]:
