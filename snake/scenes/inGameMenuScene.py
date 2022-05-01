@@ -2,6 +2,7 @@ from scenes.sceneBase import *
 from utils.button import Button
 import time
 import os
+import scenes
 
 class InGameMenuScene(SceneBase):
     gameMap = None
@@ -27,9 +28,9 @@ class InGameMenuScene(SceneBase):
 
     def goBackToGame(self, params):
         App.isPaused = False
+        if not params[0]:
+            print("resume")
         self.SwitchToPreviousScene()
-        if params[0]:
-            self.gameMap.resetGame()
 
     def saveBackup(self):
         isExist = os.path.exists(self.filePath)
@@ -39,6 +40,8 @@ class InGameMenuScene(SceneBase):
         f = open(self.filePath + filename, "a")
         self.gameMap.saveMap(f, self.score)
         f.close()
+        App.isPaused = False
+        self.SwitchToScene(scenes.menuScene.MenuScene())
 
     def ProcessInput(self, events, pressed_keys):
         for event in events:
