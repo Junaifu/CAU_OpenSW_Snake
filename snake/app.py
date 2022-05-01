@@ -1,6 +1,5 @@
 import pygame
 
-
 class App:
     screen = None
     clock = None
@@ -9,6 +8,7 @@ class App:
     snakeFont = None
     currentScene = None
     fps = 60
+    isPaused = False
     rankingPathfile = "resources/rankings.txt"
 
     def __init__(self, x, y, scene):
@@ -59,4 +59,5 @@ class App:
             self.currentScene.Render()
             self.currentScene = self.currentScene.next
             pygame.display.flip()
-            time += App.clock.tick(App.fps)
+            if (self.isPaused != True):
+                time += App.clock.tick(App.fps)

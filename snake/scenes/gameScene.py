@@ -1,6 +1,7 @@
 from scenes.sceneBase import *
 from utils.text import Text
 from gameMap import GameMap
+from scenes.inGameMenuScene import InGameMenuScene
 from snakeBody import Direction
 from scenes.gameOverScene import GameOverScene
 
@@ -14,7 +15,12 @@ class GameScene(SceneBase):
         pygame.display.set_caption("Snake")
 
     def ProcessInput(self, events, pressed_keys):
-        if pressed_keys[pygame.K_LEFT]:
+        if pressed_keys[pygame.K_ESCAPE]:
+            # Move to in game menu scene when the user presses Escape
+            self.SwitchToScene(InGameMenuScene(GameScene(), self.gameMap))
+            # Pause the game
+            App.isPaused = True
+        elif pressed_keys[pygame.K_LEFT]:
             self.gameMap.snake.changeDirection(Direction.WEST)
         elif pressed_keys[pygame.K_RIGHT]:
             self.gameMap.snake.changeDirection(Direction.EAST)

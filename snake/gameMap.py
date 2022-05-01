@@ -59,6 +59,9 @@ class GameMap:
                 tileY = GameMap.mapBeginningY + j * GameMap.tileSize
                 pygame.draw.rect(self.surface, color, pygame.Rect(tileX, tileY, GameMap.tileSize, GameMap.tileSize))
 
+    def resetGame(self):
+        self.snake = SnakeBody(self.mapSizeX / 2, self.mapSizeY / 2, Direction.NORTH, [])
+
     def clearMap(self):
         for i in range(self.mapSizeX):
             self.mapContent[i] = [None] * self.mapSizeY
