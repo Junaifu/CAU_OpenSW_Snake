@@ -7,12 +7,14 @@ from scenes.gameOverScene import GameOverScene
 
 
 class GameScene(SceneBase):
-    gameMap = GameMap()
+    gameMap = None
     score = 0
 
     def __init__(self):
         SceneBase.__init__(self)
         pygame.display.set_caption("Snake")
+        self.score = 0
+        self.gameMap = GameMap()
 
     def ProcessInput(self, events, pressed_keys):
         if pressed_keys[pygame.K_ESCAPE]:
@@ -35,11 +37,10 @@ class GameScene(SceneBase):
             self.score += 10
         if self.gameMap.checkCollision() == True:
             self.gameMap.render()
-            self.SwitchToScene(GameOverScene())
+            self.SwitchToScene(GameOverScene(self.score))
 
     def Render(self):
-        # TODO: Game Render
         App.screen.fill(pygame.Color("Black"))
-        t = Text("Score: " + str(self.score), (450, 30))
+        t = Text("Score: " + str(self.score), (400, 30))
         t.draw()
         self.gameMap.render()
