@@ -1,5 +1,6 @@
-from enum import Enum
 import pygame
+from enum import Enum
+import numpy as np
 from snakeBody import SnakeBody, Direction
 
 class MapTile(Enum):
@@ -23,13 +24,17 @@ class GameMap:
     emptyColor = (9, 0, 99)
     headColor = (29, 135, 37)
     bodyColor = (5, 228, 0)
+    appleColor = (255, 0, 0)
+    appleX = 0
+    appleY = 0
 
     def __init__(self):
         self.clearMap()
-    
+
     def render(self):
         self.clearMap()
         self.putSnakeOnMap()
+        self.appleManagement()
         for i in range(self.mapSizeX):
             for j in range(self.mapSizeY):
                 if self.mapContent[i][j] == MapTile.WALL:
@@ -38,18 +43,22 @@ class GameMap:
                     color = GameMap.headColor
                 elif self.mapContent[i][j] == MapTile.BODY:
                     color = GameMap.bodyColor
+                elif self.mapContent[i][j] == MapTile.APPLE:
+                    color = GameMap.appleColor
                 else:
                     color = GameMap.emptyColor
                 tileX = GameMap.mapBeginningX + i * GameMap.tileSize
                 tileY = GameMap.mapBeginningY + j * GameMap.tileSize
                 pygame.draw.rect(self.surface, color, pygame.Rect(tileX, tileY, GameMap.tileSize, GameMap.tileSize))
-    
+
     def clearMap(self):
         for i in range(self.mapSizeX):
             self.mapContent[i] = [None] * self.mapSizeY
             for j in range(self.mapSizeY):
                 if i == 0 or i == self.mapSizeX - 1 or j == 0 or j == self.mapSizeY - 1:
                     self.mapContent[i][j] = MapTile.WALL
+                elif i == self.appleX and j == self.appleY:
+                    self.mapContent[i][j] = MapTile.APPLE
                 else:
                     self.mapContent[i][j] = MapTile.EMPTY
 
@@ -57,3 +66,29 @@ class GameMap:
         self.mapContent[self.snake.x][self.snake.y] = MapTile.HEAD
         for part in self.snake.bodyParts:
             self.mapContent[part[0]][part[1]] = MapTile.BODY
+
+    ## Apple
+
+    def isThereAppleOnMap(self):
+        if self.mapContent[self.appleX][self.appleY] == MapTile.APPLE:
+            return True
+        return False
+
+    def randGeneration(self):
+        x = np.random.randint(low=1, high=self.mapSizeX, size=1)[0]
+        y = np.random.randint(low=1, high=self.mapSizeY, size=1)[0]
+        return x,y
+
+    def putAppleOnMap(self):
+        x,y = self.randGeneration()
+
+        while (self.mapContent[x][y] != MapTile.EMPTY):
+            x,y = self.randGeneration()
+        self.mapContent[x][y] = MapTile.APPLE
+        self.appleX = x
+        self.appleY = y
+
+    def appleManagement(self):
+        hasApple = self.isThereAppleOnMap()
+        if not hasApple:
+            self.putAppleOnMap()
