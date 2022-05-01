@@ -14,12 +14,18 @@ class MenuScene(SceneBase):
     firstStarsIndex = 0
     secondStarsIndex = 0
 
-    playButton = None
-    loadButton = None
-    rankingButton = None
-    exitButton = None
 
-    def __init__(self):
+<< << << < HEAD
+== == == =
+height = 0
+>>>>>> > feature/screen-menu
+
+playButton = None
+loadButton = None
+ rankingButton = None
+  exitButton = None
+
+   def __init__(self):
         SceneBase.__init__(self)
         pygame.display.set_caption("Menu")
         if (App.screenSizeX != None):
