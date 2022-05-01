@@ -15,15 +15,15 @@ class InGameMenuScene(SceneBase):
         self.initMenu()
 
     def initMenu(self):
-        self.resumeButton = Button("RESUME", 450, 200, self.goBackToGame())
-        self.restartButton = Button("RESTART", 455, 300, self.goBackToGame(True))
-        self.saveButton = Button("SAVE", 480, 400, print("Save"))
-        self.exitButton = Button("EXIT", 490, 500, self.Terminate())
+        self.resumeButton = Button("RESUME", 450, 200, self.goBackToGame, False)
+        self.restartButton = Button("RESTART", 455, 300, self.goBackToGame, True)
+        self.saveButton = Button("SAVE", 480, 400, None)
+        self.exitButton = Button("EXIT", 490, 500, lambda params: self.Terminate())
 
-    def goBackToGame(self, shouldRestart = False):
+    def goBackToGame(self, params):
         App.isPaused = False
         self.SwitchToPreviousScene()
-        if shouldRestart:
+        if params[0]:
             self.gameMap.resetGame()
 
     def ProcessInput(self, events, pressed_keys):
@@ -39,7 +39,7 @@ class InGameMenuScene(SceneBase):
 
     def Render(self):
         App.screen.fill(pygame.Color("Black"))
-        self.resumeButton.show()
-        self.restartButton.show()
-        self.saveButton.show()
-        self.exitButton.show()
+        self.resumeButton.draw()
+        self.restartButton.draw()
+        self.saveButton.draw()
+        self.exitButton.draw()
