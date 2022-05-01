@@ -4,13 +4,26 @@ The goal of the first term-project is to implement asimple version of the game o
 ## Notice
 Programming language chosen: Python
 
+
 ## How to launch the project:
 ### Create virtual env
-- Linux: ```virtualenv path/to/venv```
-@@ -19,3 +22,31 @@ pip install -r requirements.txt
+- Linux: ```virtualenv _path/to/venv_```
+- Windows: ```python -m venv _path/to/venv_```
+
+### Launch virtual env
+- Linux: ```source venv/bin/activate```
+- Windows: ```path/to/venv/Scripts/activate.ps1```
+    (If ExecutionPolicy is restricted do this before: Set-ExecutionPolicy Unrestricted -Scope Process)
+
+### Install dependencies in virtualenv
+```
+pip install -r requirements.txt
+```
+#### Launch the game
 ```
 python snake/snake.py
 ```
+
 ## How to play the game:
 ### Game informations
 
