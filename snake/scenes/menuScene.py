@@ -45,7 +45,6 @@ class MenuScene(SceneBase):
             "PLAY", App.screenSizeX / 2, 150, self.playButtonCallback)
         self.loadButton = Button(
             "LOAD", App.screenSizeX / 2, 250, self.loadButtonCallback)
-        # TODO: redirect to ranking screen
         self.rankingButton = Button(
             "RANKING", App.screenSizeX / 2, 350, lambda x: self.SwitchToScene(RankingScene()))
         self.exitButton = Button(
