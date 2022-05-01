@@ -31,6 +31,14 @@ class GameMap:
     def __init__(self):
         self.clearMap()
 
+    def setMap(self, mapContent, mapSizeX, mapSizeY):
+        self.mapContent = mapContent
+        self.mapSizeX = mapSizeX
+        self.mapSizeY = mapSizeY
+
+    def setSnake(self, snake):
+        self.snake = snake
+
     def render(self):
         self.clearMap()
         self.putSnakeOnMap()
