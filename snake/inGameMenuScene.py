@@ -3,6 +3,7 @@ from app import App
 from sceneBase import SceneBase
 from gameMap import GameMap
 from button import Button
+import time
 
 class InGameMenuScene(SceneBase):
     gameMap = GameMap()
@@ -25,9 +26,16 @@ class InGameMenuScene(SceneBase):
                     elif self.restartButton.rect.collidepoint(x,y):
                         print("restart")
                     elif self.saveButton.rect.collidepoint(x,y):
-                        print("save")
+                        self.writeBackupFile()
+                        self.Terminate()
                     elif self.exitButton.rect.collidepoint(x,y):
                         self.Terminate()
+
+    def writeBackupFile(self):
+        filename = "backup_" + str(time.time())
+        f = open(filename, "a")
+        self.gameMap.saveMap(f)
+        f.close()
 
     def Update(self):
         # TODO: Game Logique Update

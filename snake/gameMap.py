@@ -57,3 +57,20 @@ class GameMap:
         self.mapContent[self.snake.x][self.snake.y] = MapTile.HEAD
         for part in self.snake.bodyParts:
             self.mapContent[part[0]][part[1]] = MapTile.BODY
+
+    def saveMap(self, f):
+        f.write(str(self.snake.direction.value))
+        f.write('\n')
+        for i in range(self.mapSizeX):
+            for j in range(self.mapSizeY):
+                if self.mapContent[i][j] == MapTile.WALL:
+                    f.write(str(MapTile.WALL.value))
+                elif self.mapContent[i][j] == MapTile.HEAD:
+                    f.write(str(MapTile.HEAD.value))
+                elif self.mapContent[i][j] == MapTile.BODY:
+                    f.write(str(MapTile.BODY.value))
+                elif self.mapContent[i][j] == MapTile.APPLE:
+                    f.write(str(MapTile.APPLE.value))
+                else:
+                    f.write(str(MapTile.EMPTY.value))
+            f.write('\n')
