@@ -3,23 +3,24 @@ from app import App
 
 
 class Text:
-    def __init__(self, text, pos):
+    def __init__(self, text, pos, fontSize=42):
         self.text = text
         self.pos = pos
-
-        self.fontname = None
-        self.fontsize = 72
-        self.fontcolor = pygame.Color('white')
-        self.set_font()
+        self.fontColor = pygame.Color('white')
+        self.fontSize = fontSize
+        self.font = pygame.font.Font(os.path.join(
+            "..", "fonts", 'PublicPixel.ttf'),
+            self.fontSize)
         self.render()
 
-    def set_font(self):
-        self.font = pygame.font.Font(self.fontname, self.fontsize)
+    def setPosition(self, pos):
+        self.pos = pos
+        self.rect.topleft = self.pos
 
     def render(self):
-        self.img = self.font.render(self.text, True, self.fontcolor)
-        self.rect = self.img.get_rect()
+        self.sprite = self.font.render(self.text, True, self.fontColor)
+        self.rect = self.sprite.get_rect()
         self.rect.topleft = self.pos
 
     def draw(self):
-        App.screen.blit(self.img, self.rect)
+        App.screen.blit(self.sprite, self.rect)
