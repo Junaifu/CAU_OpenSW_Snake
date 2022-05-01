@@ -9,7 +9,6 @@ class App:
     snakeFont = None
     currentScene = None
     fps = 60
-    uiManager = None
 
     def __init__(self, x, y, scene):
         pygame.init()
