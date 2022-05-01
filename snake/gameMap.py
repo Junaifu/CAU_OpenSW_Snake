@@ -19,7 +19,7 @@ class GameMap:
     surface = pygame.display.set_mode((mapSizeX * tileSize, mapSizeY * tileSize))
     mapBeginningX = (1080 - mapSizeX * tileSize) / 2
     mapBeginningY = 100
-    snake = SnakeBody(mapSizeX / 2, mapSizeY / 2, Direction.NORTH, [])
+    snake = None
     wallColor = (127, 127, 127)
     emptyColor = (9, 0, 99)
     headColor = (29, 135, 37)
@@ -29,6 +29,9 @@ class GameMap:
     appleY = 0
 
     def __init__(self):
+        self.snake = SnakeBody(self.mapSizeX / 2, self.mapSizeY / 2, Direction.NORTH, [])
+        self.appleX = 0
+        self.appleY = 0
         self.clearMap()
 
     def setMap(self, mapContent, mapSizeX, mapSizeY):
@@ -77,12 +80,33 @@ class GameMap:
         for part in self.snake.bodyParts:
             self.mapContent[part[0]][part[1]] = MapTile.BODY
         self.mapContent[self.snake.x][self.snake.y] = MapTile.HEAD
-    
+
     def checkCollision(self):
         if self.mapContent[self.snake.x][self.snake.y] == MapTile.WALL or self.snake.checkBodyCollision() == True:
             self.putSnakeOnMap()
             return True
         return False
+
+    def saveMap(self, f, score):
+        f.write(str(self.mapSizeX) + ',' + str(self.mapSizeY) + '\n')
+        f.write(str(self.snake.direction.value) + '\n')
+        f.write(str(self.snake.bodyParts) + '\n')
+        f.write(str(score) + '\n')
+        for i in range(self.mapSizeX):
+            for j in range(self.mapSizeY):
+                if self.mapContent[i][j] == MapTile.WALL:
+                    f.write(str(MapTile.WALL.value))
+                elif self.mapContent[i][j] == MapTile.HEAD:
+                    f.write(str(MapTile.HEAD.value))
+                elif self.mapContent[i][j] == MapTile.BODY:
+                    f.write(str(MapTile.BODY.value))
+                elif self.mapContent[i][j] == MapTile.APPLE:
+                    f.write(str(MapTile.APPLE.value))
+                else:
+                    f.write(str(MapTile.EMPTY.value))
+                if j + 1 != self.mapSizeY:
+                    f.write(',')
+            f.write('\n')
 
     ## Apple
 
