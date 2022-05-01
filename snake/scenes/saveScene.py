@@ -1,10 +1,14 @@
 from scenes.sceneBase import SceneBase
+from scenes.gameScene import GameScene
 from utils.button import Button
 from utils.text import Text
+from gameMap import *
+from snakeBody import SnakeBody
 from app import App
 import scenes
 import pygame
 import os
+import ast
 from datetime import datetime
 
 
@@ -16,6 +20,7 @@ class SaveScene(SceneBase):
     secondStarsIndex = 0
     error = False
     saves = []
+    # intermediate = pygame.surface
 
     def __init__(self):
         SceneBase.__init__(self)
@@ -34,8 +39,8 @@ class SaveScene(SceneBase):
         textWidth, _ = self.titleText.font.size("Saves")
         self.titleText.setPosition(
             ((App.screenSizeX / 2) - (textWidth / 2), 50))
-        self.saves = []
         self.saveButtons = []
+        self.page = []
 
         try:
             self.rankingsText = []
@@ -44,28 +49,17 @@ class SaveScene(SceneBase):
             print(files)
             for f in files:
                 d = datetime.fromtimestamp(float(f.split("_")[1]), tz=None)
-                # self.saves.append({"filename": f, "label": d.strftime("%Y/%m/%d - %H:%M:%S")})
                 self.saveButtons.append(Button(d.strftime("%Y/%m/%d - %H:%M:%S"), 0.25 * App.screenSizeX, offset, self.saveFileSelected, f))
                 offset += 70
-            
-            # f = open(App.rankingPathfile, 'r')
-            # lines = f.readlines()
-            # offset = 150
-            # for i, line in enumerate(lines):
-            #     lineParsed = line.strip().split("_")
-            #     rankingText = lineParsed[3] + " | " + lineParsed[0] + ". " + \
-            #         lineParsed[1][0:10] + ": " + lineParsed[2]
-            #     self.rankingsText.append(
-            #         Text(rankingText, (0, 0), 30))
-            #     rankingTextWidth, rankingTextHeight = self.rankingsText[i].font.size(
-            #         rankingText)
-            #     self.rankingsText[i].setPosition(
-            #         (0.1 * App.screenSizeX, offset))
-            #     offset += rankingTextHeight + 10
-            # print(self.ranking)
 
         except OSError:
             self.error = True
+
+    def getSnakePosition(self, map):
+        for i in range(len(map)):
+            for j in range(len(map[i])):
+                if (map[i][j] == MapTile.HEAD.value):
+                    return j, i
 
     def saveFileSelected(self, params):
         filepath = App.saveDirectory + params[0]
@@ -74,10 +68,21 @@ class SaveScene(SceneBase):
             lines = f.readlines()
             sizeMap = (int(lines[0].split(",")[0]), int(lines[0].split(",")[0]))
             snakeDirection = int(lines[1])
-            score = int(lines[2])
-            print("SizeMap: " + str(sizeMap[0]) + ", " + str(sizeMap[1]))
-            print("snakeDirection: " + str(snakeDirection))
-            print("score: " + str(score))
+            snakeParts = ast.literal_eval(lines[2])
+            score = int(lines[3])
+            map = [None] * sizeMap[1]
+            i = 0
+            for j in range(4, len(lines)):
+                map[i] = [int(char) for char in lines[j].split(",")]
+                i += 1
+            posX, posY = self.getSnakePosition(map)
+            snake = SnakeBody(posX, posY, Direction(snakeDirection), snakeParts)    
+            gameMap = GameMap()
+            gameMap.setSnake(snake)
+            gameMap.setMap(map, sizeMap[0], sizeMap[1])
+            gameScene = GameScene()
+            gameScene.loadGameScene(gameMap, score)
+            self.SwitchToScene(gameScene)
         except OSError:
             self.error = True
 
@@ -112,5 +117,3 @@ class SaveScene(SceneBase):
         self.backButton.draw()
         for button in self.saveButtons:
             button.draw()
-        # for rankingText in self.rankingsText:
-        #     rankingText.draw()

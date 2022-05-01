@@ -10,7 +10,7 @@ class App:
     fps = 60
     isPaused = False
     rankingPathfile = "resources/rankings.txt"
-    saveDirectory = "backups/"
+    saveDirectory = "backup_files/"
     def __init__(self, x, y, scene):
         pygame.init()
         pygame.font.init()
