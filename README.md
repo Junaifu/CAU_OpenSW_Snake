@@ -58,8 +58,9 @@ You can then select between 4 buttons: RESUME, RESTART, SAVE and EXIT.
 Can be found in ``/backup_files`` directory.
 Skeleton of a backup file:
 ```
-sizeX,sizeY <-- (int, int) sizeX,sizeY are respectively the number of rows and columns of the map
-Direction   <-- (from 1 to 4) direction of the snake (respectively North, South, East, West)
-Score       <-- (int) score of the player
-Map         <-- (row syntax: int, int, int .... int\n) map of the saved game
+sizeX,sizeY     <-- (int, int) sizeX,sizeY are respectively the number of rows and columns of the map
+Direction       <-- (from 1 to 4) direction of the snake (respectively North, South, East, West)
+Snake coords    <-- [(int, int)] array of tuples of snake body's coords
+Score           <-- (int) score of the player
+Map             <-- (row syntax: int, int, int .... int\n) map of the saved game
 ```
