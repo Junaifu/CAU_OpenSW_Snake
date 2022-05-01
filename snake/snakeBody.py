@@ -59,3 +59,26 @@ class SnakeBody:
             if part[0] == self.x and part[1] == self.y:
                 return True
         return False
+    
+    def addBodyPart(self):
+        length = 0
+        for part in self.bodyParts:
+            length += 1
+        if length == 0:
+            newPartPos = self.getNextPartPos((self.x, self.y))
+        else:
+            newPartPos = self.getNextPartPos(self.bodyParts[length - 1])
+        self.bodyParts.append(newPartPos)
+    
+    def getNextPartPos(self, part):
+        offsetX = 0
+        offsetY = 0
+        if self.direction == NORTH:
+            offsetY = 1
+        elif self.direction == SOUTH:
+            offsetY = -1
+        elif self.direction == EAST:
+            offsetX = -1
+        elif self.direction == WEST:
+            offsetX = 1
+        return (part[0] + offsetX, part[1] + offsetY)
