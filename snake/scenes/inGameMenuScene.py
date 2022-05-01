@@ -1,5 +1,7 @@
 from scenes.sceneBase import *
 from utils.button import Button
+import time
+import os
 
 class InGameMenuScene(SceneBase):
     gameMap = None
@@ -7,17 +9,20 @@ class InGameMenuScene(SceneBase):
     restartButton = None
     saveButton = None
     exitButton = None
+    score = None
+    filePath = "backup_files/"
 
-    def __init__(self, previousScene, gameMap):
+    def __init__(self, previousScene, gameMap, score):
         SceneBase.__init__(self, previousScene)
         pygame.display.set_caption("Snake in-game menu")
         self.gameMap = gameMap
+        self.score = score
         self.initMenu()
 
     def initMenu(self):
         self.resumeButton = Button("RESUME", 450, 200, self.goBackToGame, False)
         self.restartButton = Button("RESTART", 455, 300, self.goBackToGame, True)
-        self.saveButton = Button("SAVE", 480, 400, None)
+        self.saveButton = Button("SAVE", 480, 400, lambda params: self.saveBackup())
         self.exitButton = Button("EXIT", 490, 500, lambda params: self.Terminate())
 
     def goBackToGame(self, params):
@@ -25,6 +30,15 @@ class InGameMenuScene(SceneBase):
         self.SwitchToPreviousScene()
         if params[0]:
             self.gameMap.resetGame()
+
+    def saveBackup(self):
+        isExist = os.path.exists(self.filePath)
+        if not isExist:
+            os.makedirs(self.filePath)
+        filename = "backup_" + str(time.time())
+        f = open(self.filePath + filename, "a")
+        self.gameMap.saveMap(f, self.score)
+        f.close()
 
     def ProcessInput(self, events, pressed_keys):
         for event in events:
