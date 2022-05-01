@@ -17,14 +17,16 @@ class App:
         self.snakeFont = pygame.font.SysFont('Comic Sans MS', 30)
         App.screenSizeX = x
         App.screenSizeY = y
+        # NOTE: Do not delete
+        # App.screen = pygame.display.set_mode(
+        #     (0, 0), pygame.FULLSCREEN)
+        # App.screenSizeX, App.screenSizeY = App.screen.get_size()
         App.screen = pygame.display.set_mode(
             (App.screenSizeX, App.screenSizeY), self.flags)
         App.screen.fill(pygame.Color('gray'))
         App.clock = pygame.time.Clock()
+        scene.initMenu()
         self.currentScene = scene
-        # NOTE: Do not delete
-        # self.screen = pygame.display.set_mode(
-        #     (0, 0), pygame.FULLSCREEN)
 
     def run(self):
         time = 0
@@ -33,14 +35,17 @@ class App:
             pressed_keys = pygame.key.get_pressed()
             for event in pygame.event.get():
                 quit_attempt = False
+                if event.type == pygame.VIDEORESIZE:
+                    App.screen = pygame.display.set_mode(
+                        (event.w, event.h), pygame.RESIZABLE)
+                    App.screenSizeX = event.w
+                    App.screenSizeY = event.h
                 if event.type == pygame.QUIT:
                     quit_attempt = True
                 elif event.type == pygame.KEYDOWN:
                     alt_pressed = pressed_keys[pygame.K_LALT] or \
                         pressed_keys[pygame.K_RALT]
-                    if event.key == pygame.K_ESCAPE:
-                        quit_attempt = True
-                    elif event.key == pygame.K_F4 and alt_pressed:
+                    if event.key == pygame.K_F4 and alt_pressed:
                         quit_attempt = True
                 if quit_attempt:
                     self.currentScene.Terminate()
