@@ -19,8 +19,7 @@ class SaveScene(SceneBase):
     firstStarsIndex = 0
     secondStarsIndex = 0
     error = False
-    saves = []
-    # intermediate = pygame.surface
+    saveButtons = []
 
     def __init__(self):
         SceneBase.__init__(self)
@@ -35,25 +34,37 @@ class SaveScene(SceneBase):
         self.secondStarsIndex = 0
         self.backButton = Button("<- Go Back", 0, 50,
                                  (lambda x: self.SwitchToScene(scenes.menuScene.MenuScene())))
-        self.titleText = Text("Saves", (150, 150))
+        self.titleText = Text("Saves", (0.1 * App.screenSizeX, App.screenSizeY / 2))
         textWidth, _ = self.titleText.font.size("Saves")
-        self.titleText.setPosition(
-            ((App.screenSizeX / 2) - (textWidth / 2), 50))
         self.saveButtons = []
-        self.page = []
 
         try:
             self.rankingsText = []
-            files = os.listdir("backups")
-            offset = 150
-            print(files)
+            files = os.listdir(App.saveDirectory)
+            offset = 50
+            files.sort(reverse=True)
             for f in files:
                 d = datetime.fromtimestamp(float(f.split("_")[1]), tz=None)
-                self.saveButtons.append(Button(d.strftime("%Y/%m/%d - %H:%M:%S"), 0.25 * App.screenSizeX, offset, self.saveFileSelected, f))
+                self.saveButtons.append(Button(d.strftime("%Y/%m/%d - %H:%M:%S"), 0.4 * App.screenSizeX, offset, self.saveFileSelected, f))
                 offset += 70
 
         except OSError:
             self.error = True
+
+        self.limit = len(self.saveButtons) * self.saveButtons[0].size[1]
+        self.intermediate = pygame.surface.Surface((App.screenSizeX, App.screenSizeY + self.limit), pygame.SRCALPHA, 32)
+        self.intermediate = self.intermediate.convert_alpha()
+        self.i_a = self.intermediate.get_rect()
+        self.x1 = self.i_a[0]
+        self.x2 = self.x1 + self.i_a[2]
+        self.y1 = self.i_a[1]
+        self.y2 = self.y1 + self.i_a[3]
+        self.scroll_y = 0
+        for line in range(self.y1,self.y2):
+            pygame.draw.line(self.intermediate, (0, 0, 0, 32), (self.x1, line), (self.x2, line))
+        for button in self.saveButtons:
+            self.intermediate.blit(button.surface, (button.x, button.y))
+
 
     def getSnakePosition(self, map):
         for i in range(len(map)):
@@ -89,7 +100,13 @@ class SaveScene(SceneBase):
     def ProcessInput(self, events, pressed_keys):
         for event in events:
             for button in self.saveButtons:
-                button.event(event)
+                button.event(event, self.scroll_y)
+            self.backButton.event(event)
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if event.button == 4:
+                    self.scroll_y = min(self.scroll_y + 15, 0)
+                if event.button == 5:
+                    self.scroll_y = max(self.scroll_y - 15, -self.limit)
         pass
 
     def Update(self):
@@ -115,5 +132,5 @@ class SaveScene(SceneBase):
             self.stars2, (0, App.screenSizeY + self.secondStarsIndex))
         self.titleText.draw()
         self.backButton.draw()
-        for button in self.saveButtons:
-            button.draw()
+        App.screen.blit(self.intermediate, (0, self.scroll_y))
+

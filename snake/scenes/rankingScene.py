@@ -49,7 +49,6 @@ class RankingScene(SceneBase):
                 self.rankingsText[i].setPosition(
                     (0.1 * App.screenSizeX, offset))
                 offset += rankingTextHeight + 10
-            print(self.ranking)
 
         except OSError:
             self.error = True
