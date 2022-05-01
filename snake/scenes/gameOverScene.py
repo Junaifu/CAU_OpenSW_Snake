@@ -4,6 +4,7 @@ from utils.text import Text
 from utils.textInput import TextInput
 from utils.button import Button
 import pygame
+from datetime import datetime
 
 
 class GameOverScene(SceneBase):
@@ -11,6 +12,7 @@ class GameOverScene(SceneBase):
     textInput = None
     playAgainButton = None
     mainMenuButton = None
+    error = False
 
     background = pygame.image.load('resources/bg.png')
     stars = pygame.image.load('resources/Stars Small_1.png')
@@ -38,10 +40,11 @@ class GameOverScene(SceneBase):
 
     def mainMenuCallback(self, params):
         self.SwitchToScene(scenes.menuScene.MenuScene())
-        # TODO ranking
+        self.handleRanking(self.textInput.text)
     
     def playAgainCallback(self, params):
         self.SwitchToScene(scenes.gameScene.GameScene())
+        self.handleRanking(self.textInput.text)
 
     def ProcessInput(self, events, pressed_keys):
         for event in events:
@@ -79,3 +82,46 @@ class GameOverScene(SceneBase):
         self.textInput.draw()
         self.mainMenuButton.draw()
         self.playAgainButton.draw()
+    
+    def getRankingFileContent(self):
+        try:
+            self.rankingsText = []
+            f = open(App.rankingPathfile, 'r')
+            lines = f.readlines()
+            for i, line in enumerate(lines):
+                lineParsed = line.strip().split("_")
+                rankingText = lineParsed[0] + "_" + lineParsed[1][0:10] + "_" + lineParsed[2] + "_" + lineParsed[3]
+                self.rankingsText.append(rankingText)
+            f.close()
+        except OSError:
+            self.error = True
+
+    def handleRanking(self, playerName):
+        if playerName == "":
+            return
+        self.getRankingFileContent()
+        now = datetime.now()
+        date = now.strftime("%Y/%m/%d")
+        
+        rankingPos = 0
+        for ranking in self.rankingsText:
+            rankingInfo = ranking.split('_')
+            if int(rankingInfo[2]) < int(self.score):
+                break
+            rankingPos += 1
+        if rankingPos >= 9:
+            return
+        self.rankingsText = self.rankingsText[0:rankingPos] + [str(rankingPos + 1) + "_" + playerName + "_" + str(self.score) + "_" + date] + self.rankingsText[rankingPos:]
+        rankingFileContent = ""
+        rankingPos = 1
+        for ranking in self.rankingsText:
+            if rankingPos > 10:
+                break
+            rankingFileContent += str(rankingPos)
+            rankingFileContent += ranking[1:]
+            rankingFileContent += "\n"
+            rankingPos += 1
+        f = open(App.rankingPathfile, "w")
+        f.write(rankingFileContent)
+        f.close()
+
