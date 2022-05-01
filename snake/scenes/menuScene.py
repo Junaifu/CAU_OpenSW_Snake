@@ -1,4 +1,5 @@
 from scenes.sceneBase import SceneBase
+from scenes.saveScene import SaveScene
 from scenes.gameScene import GameScene
 from scenes.rankingScene import RankingScene
 from utils.button import Button
@@ -30,7 +31,7 @@ class MenuScene(SceneBase):
 
     # TODO: redirect to LoadFiles screen
     def loadButtonCallback(self, params):
-        self.SwitchToScene(GameScene())
+        self.SwitchToScene(SaveScene())
 
     def initMenu(self):
         self.background = pygame.transform.scale(
@@ -69,7 +70,6 @@ class MenuScene(SceneBase):
                 self.stars2, (0, App.screenSizeY + self.secondStarsIndex))
             self.secondStarsIndex = -App.screenSizeY
         self.secondStarsIndex += 1
-        pass
 
     def Render(self):
         App.screen.blit(self.background, (0, 0))

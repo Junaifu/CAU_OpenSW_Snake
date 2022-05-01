@@ -31,18 +31,19 @@ class Button:
             2
     """
 
-    def __init__(self, text,  posx, posy, callback, *params, bg="black", fontsize=25):
+    def __init__(self, text,  posx, posy, callback, *params, bg=[0,0,0,0], fontsize=25):
         self.x = posx
         self.y = posy
         self.callback = callback
         self.params = params
+        self.textString = text
 
         pygame.font.init()
         self.font = pygame.font.Font(os.path.join(
             "fonts", 'PublicPixel.ttf'), fontsize)
         self.text = self.font.render(text, 1, pygame.Color("White"))
         self.size = self.text.get_size()
-        self.surface = pygame.Surface(self.size)
+        self.surface = pygame.Surface(self.size).convert_alpha()
         self.surface.fill(bg)
         self.surface.blit(self.text, (0, 0))
         self.rect = pygame.Rect(self.x, self.y, self.size[0], self.size[1])
@@ -50,9 +51,9 @@ class Button:
     def draw(self):
         App.screen.blit(self.surface, (self.x, self.y))
 
-    def event(self, event):
+    def event(self, event, offset=0):
         if event.type == pygame.MOUSEBUTTONDOWN:
-            x, y = pygame.mouse.get_pos()
             if pygame.mouse.get_pressed()[0]:
-                if self.rect.collidepoint(x, y):
+                x, y = pygame.mouse.get_pos()
+                if self.rect.collidepoint(x, y - offset):
                     self.callback(self.params)

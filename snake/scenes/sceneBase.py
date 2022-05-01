@@ -3,6 +3,7 @@ from app import App
 
 class SceneBase:
     def __init__(self):
+        App.fps = 30
         self.next = self
 
     # NOTE: This method will receive all the events that happened since the last frame.

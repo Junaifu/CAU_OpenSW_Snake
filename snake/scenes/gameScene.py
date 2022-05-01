@@ -13,8 +13,13 @@ class GameScene(SceneBase):
     def __init__(self, score = 0, map = None):
         SceneBase.__init__(self)
         pygame.display.set_caption("Snake")
+        App.fps = 80
         self.score = score
         self.gameMap = map if map else GameMap()
+
+    def loadGameScene(self, gameMap, score):
+        self.gameMap = gameMap
+        self.score = score
 
     def ProcessInput(self, events, pressed_keys):
         if pressed_keys[pygame.K_ESCAPE]:
