@@ -36,6 +36,7 @@ class SaveScene(SceneBase):
                                  (lambda x: self.SwitchToScene(scenes.menuScene.MenuScene())))
         self.titleText = Text("Saves", (0.1 * App.screenSizeX, App.screenSizeY / 2))
         textWidth, _ = self.titleText.font.size("Saves")
+        self.errorText = Text("No save available", (0.1 * App.screenSizeX, App.screenSizeY / 2))
         self.saveButtons = []
 
         try:
@@ -43,27 +44,30 @@ class SaveScene(SceneBase):
             files = os.listdir(App.saveDirectory)
             offset = 50
             files.sort(reverse=True)
+            if (len(files) == 0):
+                self.error = True
+                return
             for f in files:
                 d = datetime.fromtimestamp(float(f.split("_")[1]), tz=None)
                 self.saveButtons.append(Button(d.strftime("%Y/%m/%d - %H:%M:%S"), 0.4 * App.screenSizeX, offset, self.saveFileSelected, f))
                 offset += 70
 
+            self.limit = len(self.saveButtons) * self.saveButtons[0].size[1]
+            self.intermediate = pygame.surface.Surface((App.screenSizeX, App.screenSizeY + self.limit), pygame.SRCALPHA, 32)
+            self.intermediate = self.intermediate.convert_alpha()
+            self.i_a = self.intermediate.get_rect()
+            self.x1 = self.i_a[0]
+            self.x2 = self.x1 + self.i_a[2]
+            self.y1 = self.i_a[1]
+            self.y2 = self.y1 + self.i_a[3]
+            self.scroll_y = 0
+            for line in range(self.y1,self.y2):
+                pygame.draw.line(self.intermediate, (0, 0, 0, 32), (self.x1, line), (self.x2, line))
+            for button in self.saveButtons:
+                self.intermediate.blit(button.surface, (button.x, button.y))
+
         except OSError:
             self.error = True
-
-        self.limit = len(self.saveButtons) * self.saveButtons[0].size[1]
-        self.intermediate = pygame.surface.Surface((App.screenSizeX, App.screenSizeY + self.limit), pygame.SRCALPHA, 32)
-        self.intermediate = self.intermediate.convert_alpha()
-        self.i_a = self.intermediate.get_rect()
-        self.x1 = self.i_a[0]
-        self.x2 = self.x1 + self.i_a[2]
-        self.y1 = self.i_a[1]
-        self.y2 = self.y1 + self.i_a[3]
-        self.scroll_y = 0
-        for line in range(self.y1,self.y2):
-            pygame.draw.line(self.intermediate, (0, 0, 0, 32), (self.x1, line), (self.x2, line))
-        for button in self.saveButtons:
-            self.intermediate.blit(button.surface, (button.x, button.y))
 
 
     def getSnakePosition(self, map):
@@ -129,7 +133,10 @@ class SaveScene(SceneBase):
         App.screen.blit(self.stars2, (0, self.secondStarsIndex))
         App.screen.blit(
             self.stars2, (0, App.screenSizeY + self.secondStarsIndex))
-        self.titleText.draw()
         self.backButton.draw()
-        App.screen.blit(self.intermediate, (0, self.scroll_y))
+        if (self.error):
+            self.errorText.draw()
+        else:
+            self.titleText.draw()
+            App.screen.blit(self.intermediate, (0, self.scroll_y))
 

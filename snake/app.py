@@ -7,23 +7,18 @@ class App:
     screenSizeY = None
     snakeFont = None
     currentScene = None
-    fps = 60
+    fps = 30
     isPaused = False
     rankingPathfile = "resources/rankings.txt"
     saveDirectory = "backup_files/"
     def __init__(self, x, y, scene):
         pygame.init()
         pygame.font.init()
-        self.flags = pygame.RESIZABLE
         self.snakeFont = pygame.font.SysFont('Comic Sans MS', 30)
         App.screenSizeX = x
         App.screenSizeY = y
-        # NOTE: Do not delete
-        # App.screen = pygame.display.set_mode(
-        #     (0, 0), pygame.FULLSCREEN)
-        # App.screenSizeX, App.screenSizeY = App.screen.get_size()
         App.screen = pygame.display.set_mode(
-            (App.screenSizeX, App.screenSizeY), self.flags)
+            (App.screenSizeX, App.screenSizeY))
         App.screen.fill(pygame.Color('gray'))
         App.clock = pygame.time.Clock()
         scene.initMenu()
@@ -52,10 +47,10 @@ class App:
                     self.currentScene.Terminate()
                 else:
                     filtered_events.append(event)
-            self.currentScene.ProcessInput(filtered_events, pressed_keys)
             if time >= self.fps:
                 self.currentScene.Update()
                 time = 0
+                self.currentScene.ProcessInput(filtered_events, pressed_keys)
             self.currentScene.Render()
             self.currentScene = self.currentScene.next
             pygame.display.flip()

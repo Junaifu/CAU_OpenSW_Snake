@@ -94,13 +94,13 @@ class GameMap:
         f.write(str(score) + '\n')
         for i in range(self.mapSizeX):
             for j in range(self.mapSizeY):
-                if self.mapContent[i][j] == MapTile.WALL:
+                if self.mapContent[j][i] == MapTile.WALL:
                     f.write(str(MapTile.WALL.value))
-                elif self.mapContent[i][j] == MapTile.HEAD:
+                elif self.mapContent[j][i] == MapTile.HEAD:
                     f.write(str(MapTile.HEAD.value))
-                elif self.mapContent[i][j] == MapTile.BODY:
+                elif self.mapContent[j][i] == MapTile.BODY:
                     f.write(str(MapTile.BODY.value))
-                elif self.mapContent[i][j] == MapTile.APPLE:
+                elif self.mapContent[j][i] == MapTile.APPLE:
                     f.write(str(MapTile.APPLE.value))
                 else:
                     f.write(str(MapTile.EMPTY.value))

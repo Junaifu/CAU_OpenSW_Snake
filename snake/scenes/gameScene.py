@@ -13,6 +13,7 @@ class GameScene(SceneBase):
     def __init__(self, score = 0, map = None):
         SceneBase.__init__(self)
         pygame.display.set_caption("Snake")
+        App.fps = 80
         self.score = score
         self.gameMap = map if map else GameMap()
 

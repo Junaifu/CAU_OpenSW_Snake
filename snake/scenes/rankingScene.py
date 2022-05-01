@@ -30,6 +30,7 @@ class RankingScene(SceneBase):
                                  (lambda x: self.SwitchToScene(scenes.menuScene.MenuScene())))
         self.titleText = Text("Ranking", (150, 150))
         textWidth, _ = self.titleText.font.size("Ranking")
+        self.errorText = Text("No ranking available", (0.1 * App.screenSizeX, App.screenSizeY / 2))
         self.titleText.setPosition(
             ((App.screenSizeX / 2) - (textWidth / 2), 50))
 
@@ -79,7 +80,10 @@ class RankingScene(SceneBase):
         App.screen.blit(self.stars2, (0, self.secondStarsIndex))
         App.screen.blit(
             self.stars2, (0, App.screenSizeY + self.secondStarsIndex))
-        self.titleText.draw()
         self.backButton.draw()
-        for rankingText in self.rankingsText:
-            rankingText.draw()
+        if (self.error):
+            self.errorText.draw()
+        else:
+            self.titleText.draw()
+            for rankingText in self.rankingsText:
+                rankingText.draw()
