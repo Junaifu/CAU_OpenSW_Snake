@@ -1,12 +1,14 @@
 from scenes.sceneBase import *
 from utils.text import Text
 from gameMap import GameMap
-from inGameMenuScene import InGameMenuScene
+from scenes.inGameMenuScene import InGameMenuScene
 from snakeBody import Direction
+from scenes.gameOverScene import GameOverScene
 
 
 class GameScene(SceneBase):
     gameMap = GameMap()
+    score = 0
 
     def __init__(self):
         SceneBase.__init__(self)
@@ -15,7 +17,9 @@ class GameScene(SceneBase):
     def ProcessInput(self, events, pressed_keys):
         if pressed_keys[pygame.K_ESCAPE]:
             # Move to in game menu scene when the user presses Escape
-            self.SwitchToScene(InGameMenuScene())
+            self.SwitchToScene(InGameMenuScene(GameScene(), self.gameMap))
+            # Pause the game
+            App.isPaused = True
         elif pressed_keys[pygame.K_LEFT]:
             self.gameMap.snake.changeDirection(Direction.WEST)
         elif pressed_keys[pygame.K_RIGHT]:
@@ -26,11 +30,16 @@ class GameScene(SceneBase):
             self.gameMap.snake.changeDirection(Direction.SOUTH)
 
     def Update(self):
-        self.gameMap.snake.move()
+        isOnApple = self.gameMap.snake.move(self.gameMap.appleX, self.gameMap.appleY)
+        if isOnApple == True:
+            self.score += 10
+        if self.gameMap.checkCollision() == True:
+            self.gameMap.render()
+            self.SwitchToScene(GameOverScene())
 
     def Render(self):
         # TODO: Game Render
         App.screen.fill(pygame.Color("Black"))
-        t = Text("Score: 0", (450, 30))
+        t = Text("Score: " + str(self.score), (450, 30))
         t.draw()
         self.gameMap.render()

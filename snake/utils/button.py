@@ -39,7 +39,7 @@ class Button:
 
         pygame.font.init()
         self.font = pygame.font.Font(os.path.join(
-            "..", "fonts", 'PublicPixel.ttf'), fontsize)
+            "fonts", 'PublicPixel.ttf'), fontsize)
         self.text = self.font.render(text, 1, pygame.Color("White"))
         self.size = self.text.get_size()
         self.surface = pygame.Surface(self.size)

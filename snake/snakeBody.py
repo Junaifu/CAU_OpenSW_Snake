@@ -23,7 +23,7 @@ class SnakeBody:
             length += 1
         self.size = length
     
-    def move(self):
+    def move(self, appleX, appleY):
         oldX = self.x
         oldY = self.y
         if self.direction == Direction.NORTH:
@@ -34,17 +34,26 @@ class SnakeBody:
             self.x += 1
         else:
             self.x -= 1
-        self.moveBody(oldX, oldY)
+        isOnApple = self.x == appleX and self.y == appleY
+        self.moveBody(oldX, oldY, isOnApple)
+        return isOnApple
     
-    def moveBody(self, oldX, oldY):
+    def moveBody(self, oldX, oldY, isOnApple):
         length = 0
+        newPart = (0, 0)
         for part in self.bodyParts:
             length += 1
+        if length == 0:
+            newPart = (oldX, oldY)
         for i in range(length - 1, -1, -1):
+            if isOnApple == True and i == length - 1:
+                newPart = self.bodyParts[i]
             if i == 0:
                 self.bodyParts[i] = (oldX, oldY)
             else:
                 self.bodyParts[i] = (self.bodyParts[i - 1][0], self.bodyParts[i - 1][1])
+        if isOnApple == True:
+            self.bodyParts.append(newPart)
     
     def changeDirection(self, newDirection):
         if (newDirection == Direction.NORTH and self.direction == Direction.SOUTH or
@@ -53,3 +62,9 @@ class SnakeBody:
             newDirection == Direction.EAST and self.direction == Direction.WEST):
             return
         self.direction = newDirection
+    
+    def checkBodyCollision(self):
+        for part in self.bodyParts:
+            if part[0] == self.x and part[1] == self.y:
+                return True
+        return False

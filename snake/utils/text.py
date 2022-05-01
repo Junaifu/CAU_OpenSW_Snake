@@ -10,7 +10,7 @@ class Text:
         self.fontColor = pygame.Color('white')
         self.fontSize = fontSize
         self.font = pygame.font.Font(os.path.join(
-            "..", "fonts", 'PublicPixel.ttf'),
+            "fonts", 'PublicPixel.ttf'),
             self.fontSize)
         self.render()
 
