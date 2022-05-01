@@ -87,6 +87,7 @@ class GameMap:
     def saveMap(self, f, score):
         f.write(str(self.mapSizeX) + ',' + str(self.mapSizeY) + '\n')
         f.write(str(self.snake.direction.value) + '\n')
+        f.write(str(self.snake.bodyParts) + '\n')
         f.write(str(score) + '\n')
         for i in range(self.mapSizeX):
             for j in range(self.mapSizeY):
