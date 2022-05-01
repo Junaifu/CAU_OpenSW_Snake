@@ -6,9 +6,10 @@ from app import App
 class TextInput():
     text = ""
     active = False
-    color_active = pygame.Color('lightskyblue3')
-    color_passive = pygame.Color('chartreuse4')
+    color_active = pygame.Color('white')
+    color_passive = (95, 95, 95)
     color = color_passive
+    defaultOffset = 5
 
     def __init__(self, posx, posy, size, fontsize=42):
         self.x = posx
@@ -21,7 +22,7 @@ class TextInput():
     def ProcessInput(self, event, pressed_keys):
         if self.active == False:
             return
-        if pressed_keys[pygame.K_ESCAPE]:
+        if pressed_keys[pygame.K_ESCAPE] or pressed_keys[pygame.K_RETURN]:
             self.active = False
             self.color = self.color_passive
             return
@@ -29,7 +30,8 @@ class TextInput():
             if event.key == pygame.K_BACKSPACE:
                 self.text = self.text[:-1]
             else:
-                if event.unicode == '_' or event.key == pygame.K_ESCAPE or len(self.text) >= 10:
+                if (event.unicode == '_' or event.key == pygame.K_ESCAPE
+                or event.key == pygame.K_RETURN or len(self.text) >= 10):
                     return
                 self.text += event.unicode
 
@@ -46,6 +48,8 @@ class TextInput():
 
     def draw(self):
         pygame.draw.rect(App.screen, self.color, self.rect)
-        text_surface = self.font.render(self.text, True, (255, 255, 255))
-        offset = 5
+        text_surface = self.font.render(self.text, True, (0, 0, 0))
+        offset = self.size[0] / 2 - (len(self.text) / 2) * self.size[0] / 10
+        if offset < self.defaultOffset:
+            offset = self.defaultOffset
         App.screen.blit(text_surface, (self.x + offset, self.y + 5))

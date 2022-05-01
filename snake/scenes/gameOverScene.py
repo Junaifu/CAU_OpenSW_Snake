@@ -11,16 +11,31 @@ class GameOverScene(SceneBase):
     textInput = None
     mainMenuButton = None
 
+    background = pygame.image.load('resources/bg.png')
+    stars = pygame.image.load('resources/Stars Small_1.png')
+    stars2 = pygame.image.load('resources/Stars-Big_1_1_PC.png')
+    firstStarsIndex = 0
+    secondStarsIndex = 0
+
     def __init__(self, score):
         SceneBase.__init__(self)
         pygame.display.set_caption("Game Over")
         self.score = score
         self.textInput = TextInput(340, 400, (430, 70))
         self.mainMenuButton = Button(
-            "BACK TO MAIN MENU", App.screenSizeX / 2, 600, self.mainMenuCallback)
-    
+            "BACK TO MAIN MENU", 340, 600, self.mainMenuCallback)
+        self.background = pygame.transform.scale(
+            self.background, (App.screenSizeX, App.screenSizeY))
+        self.stars = pygame.transform.scale(
+            self.stars, (App.screenSizeX, App.screenSizeY))
+        self.stars2 = pygame.transform.scale(
+            self.stars2, (App.screenSizeX, App.screenSizeY))
+        self.firstStarsIndex = -App.screenSizeY
+        self.secondStarsIndex = -App.screenSizeY
+
     def mainMenuCallback(self, params):
         self.SwitchToScene(scenes.menuScene.MenuScene())
+        # TODO ranking
 
     def ProcessInput(self, events, pressed_keys):
         for event in events:
@@ -29,10 +44,25 @@ class GameOverScene(SceneBase):
             self.mainMenuButton.event(event)
 
     def Update(self):
-        pass
+        if (self.firstStarsIndex >= 0):
+            App.screen.blit(
+                self.stars, (0, App.screenSizeY + self.firstStarsIndex))
+            self.firstStarsIndex = -App.screenSizeY
+        self.firstStarsIndex += 2
+        if (self.secondStarsIndex >= 0):
+            App.screen.blit(
+                self.stars2, (0, App.screenSizeY + self.secondStarsIndex))
+            self.secondStarsIndex = -App.screenSizeY
+        self.secondStarsIndex += 1
 
     def Render(self):
-        App.screen.fill(pygame.Color("Red"))
+        App.screen.blit(self.background, (0, 0))
+        App.screen.blit(self.stars, (0, self.firstStarsIndex))
+        App.screen.blit(
+            self.stars, (0, App.screenSizeY + self.firstStarsIndex))
+        App.screen.blit(self.stars2, (0, self.secondStarsIndex))
+        App.screen.blit(
+            self.stars2, (0, App.screenSizeY + self.secondStarsIndex))
         t = Text("Game Over", (350, 100))
         t.draw()
         scoreText = Text("Your score: " + str(self.score), (270, 200))
