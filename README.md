@@ -1,5 +1,5 @@
 # This project is an assignment for the module "Open Source SW" from ChungAng University 
-The goal of the first term-project is to implement asimple version of the game of “Snake”.
+The goal of the first term-project is to implement a simple version of the game of “Snake”.
 
 ## Notice
 Programming language chosen: Python
@@ -7,8 +7,8 @@ Programming language chosen: Python
 
 ## How to launch the project:
 ### Create virtual env
-- Linux: ```virtualenv _path/to/venv_```
-- Windows: ```python -m venv _path/to/venv_```
+- Linux: ```virtualenv path/to/venv```
+- Windows: ```python -m venv path/to/venv```
 
 ### Launch virtual env
 - Linux: ```source venv/bin/activate```
@@ -55,7 +55,8 @@ You can then select between 4 buttons: RESUME, RESTART, SAVE and EXIT.
 
 ### Backup file
 
-Template of a file:
+Can be found in ``/backup_files`` directory.
+Skeleton of a backup file:
 ```
 sizeX,sizeY <-- (int, int) sizeX,sizeY are respectively the number of rows and columns of the map
 Direction   <-- (from 1 to 4) direction of the snake (respectively North, South, East, West)
