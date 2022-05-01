@@ -19,7 +19,7 @@ class GameMap:
     surface = pygame.display.set_mode((mapSizeX * tileSize, mapSizeY * tileSize))
     mapBeginningX = (1080 - mapSizeX * tileSize) / 2
     mapBeginningY = 100
-    snake = SnakeBody(mapSizeX / 2, mapSizeY / 2, Direction.NORTH, [])
+    snake = None
     wallColor = (127, 127, 127)
     emptyColor = (9, 0, 99)
     headColor = (29, 135, 37)
@@ -29,6 +29,9 @@ class GameMap:
     appleY = 0
 
     def __init__(self):
+        self.snake = SnakeBody(self.mapSizeX / 2, self.mapSizeY / 2, Direction.NORTH, [])
+        self.appleX = 0
+        self.appleY = 0
         self.clearMap()
 
     def setMap(self, mapContent, mapSizeX, mapSizeY):
