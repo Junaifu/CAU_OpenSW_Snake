@@ -17,7 +17,7 @@ class RankingScene(SceneBase):
 
     def __init__(self):
         SceneBase.__init__(self)
-        pygame.display.set_caption("Menu")
+        pygame.display.set_caption("Ranking")
         self.background = pygame.transform.scale(
             self.background, (App.screenSizeX, App.screenSizeY))
         self.stars = pygame.transform.scale(
