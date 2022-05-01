@@ -1,7 +1,7 @@
 from scenes.sceneBase import *
 from utils.text import Text
 from gameMap import GameMap
-from inGameMenuScene import InGameMenuScene
+from scenes.inGameMenuScene import InGameMenuScene
 from snakeBody import Direction
 
 
