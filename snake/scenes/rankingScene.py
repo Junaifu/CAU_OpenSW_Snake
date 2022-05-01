@@ -56,7 +56,7 @@ class RankingScene(SceneBase):
     def ProcessInput(self, events, pressed_keys):
         for event in events:
             self.backButton.event(event)
-        pass
+        
 
     def Update(self):
         if (self.firstStarsIndex <= -App.screenSizeY):

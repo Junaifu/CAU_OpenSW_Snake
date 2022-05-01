@@ -107,7 +107,6 @@ class SaveScene(SceneBase):
                     self.scroll_y = min(self.scroll_y + 15, 0)
                 if event.button == 5:
                     self.scroll_y = max(self.scroll_y - 15, -self.limit)
-        pass
 
     def Update(self):
         if (self.firstStarsIndex <= -App.screenSizeY):

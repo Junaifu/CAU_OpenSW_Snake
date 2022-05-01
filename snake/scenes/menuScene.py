@@ -70,7 +70,6 @@ class MenuScene(SceneBase):
                 self.stars2, (0, App.screenSizeY + self.secondStarsIndex))
             self.secondStarsIndex = -App.screenSizeY
         self.secondStarsIndex += 1
-        pass
 
     def Render(self):
         App.screen.blit(self.background, (0, 0))
