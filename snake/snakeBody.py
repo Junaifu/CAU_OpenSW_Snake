@@ -34,10 +34,7 @@ class SnakeBody:
             self.x += 1
         else:
             self.x -= 1
-        if self.x == appleX and self.y == appleY:
-            isOnApple = True
-        else:
-            isOnApple = False
+        isOnApple = self.x == appleX and self.y == appleY
         self.moveBody(oldX, oldY, isOnApple)
         return isOnApple
     
