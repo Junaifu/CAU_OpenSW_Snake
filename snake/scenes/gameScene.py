@@ -26,7 +26,7 @@ class GameScene(SceneBase):
     def ProcessInput(self, events, pressed_keys):
         if pressed_keys[pygame.K_ESCAPE]:
             # Move to in game menu scene when the user presses Escape
-            self.SwitchToScene(InGameMenuScene(self.gameMap, self.score))
+            self.SwitchToScene(InGameMenuScene(self.gameMap, self.score, self.gameMode))
             # Pause the game
             App.isPaused = True
         if self.gameMode == GameMode.SINGLE:
@@ -50,7 +50,7 @@ class GameScene(SceneBase):
                 self.score += 10
             if self.gameMap.checkCollision() == True:
                 self.gameMap.render()
-                self.SwitchToScene(GameOverScene(self.score))
+                self.SwitchToScene(GameOverScene(self.score, self.gameMode))
         if self.gameMode == GameMode.AUTO:
             print("Auto")
         if self.gameMode == GameMode.DUAL:

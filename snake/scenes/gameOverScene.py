@@ -8,6 +8,7 @@ from datetime import datetime
 
 
 class GameOverScene(SceneBase):
+    gameMode = None
     score = 0
     textInput = None
     playAgainButton = None
@@ -20,9 +21,10 @@ class GameOverScene(SceneBase):
     firstStarsIndex = 0
     secondStarsIndex = 0
 
-    def __init__(self, score):
+    def __init__(self, score, gameMode):
         SceneBase.__init__(self)
         pygame.display.set_caption("Game Over")
+        self.gameMode = gameMode
         self.score = score
         self.textInput = TextInput(340, 400, (430, 70))
         self.mainMenuButton = Button(
@@ -41,9 +43,9 @@ class GameOverScene(SceneBase):
     def mainMenuCallback(self, params):
         self.SwitchToScene(scenes.menuScene.MenuScene())
         self.handleRanking(self.textInput.text)
-    
+
     def playAgainCallback(self, params):
-        self.SwitchToScene(scenes.gameScene.GameScene())
+        self.SwitchToScene(scenes.gameScene.GameScene(self.gameMode))
         self.handleRanking(self.textInput.text)
 
     def ProcessInput(self, events, pressed_keys):
@@ -82,7 +84,7 @@ class GameOverScene(SceneBase):
         self.textInput.draw()
         self.mainMenuButton.draw()
         self.playAgainButton.draw()
-    
+
     def getRankingFileContent(self):
         try:
             self.rankingsText = []
@@ -102,7 +104,7 @@ class GameOverScene(SceneBase):
         self.getRankingFileContent()
         now = datetime.now()
         date = now.strftime("%Y/%m/%d")
-        
+
         rankingPos = 0
         for ranking in self.rankingsText:
             rankingInfo = ranking.split('_')
