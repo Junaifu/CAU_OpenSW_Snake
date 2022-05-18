@@ -1,6 +1,6 @@
 from enum import Enum
 
 class GameMode(Enum):
-    SINGLE = 0
-    DUAL = 1
-    AUTO = 2
+    AUTO = 0
+    SINGLE = 1
+    DUAL = 2
