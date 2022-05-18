@@ -50,7 +50,7 @@ class App:
             if time >= self.fps:
                 self.currentScene.Update()
                 time = 0
-                self.currentScene.ProcessInput(filtered_events, pressed_keys)
+            self.currentScene.ProcessInput(filtered_events, pressed_keys)
             self.currentScene.Render()
             self.currentScene = self.currentScene.next
             pygame.display.flip()

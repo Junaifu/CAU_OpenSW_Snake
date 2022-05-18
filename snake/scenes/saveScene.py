@@ -10,7 +10,7 @@ import pygame
 import os
 import ast
 from datetime import datetime
-
+from enums import GameMode
 
 class SaveScene(SceneBase):
     background = pygame.image.load('resources/bg.png')
@@ -91,11 +91,11 @@ class SaveScene(SceneBase):
                 map[i] = [int(char) for char in lines[j].split(",")]
                 i += 1
             posX, posY = self.getSnakePosition(map)
-            snake = SnakeBody(posX, posY, Direction(snakeDirection), snakeParts)    
+            snake = SnakeBody(posX, posY, Direction(snakeDirection), snakeParts)
             gameMap = GameMap()
             gameMap.setSnake(snake)
             gameMap.setMap(map, sizeMap[0], sizeMap[1])
-            gameScene = GameScene()
+            gameScene = GameScene(GameMode.SINGLE)
             gameScene.loadGameScene(gameMap, score)
             self.SwitchToScene(gameScene)
         except OSError:
