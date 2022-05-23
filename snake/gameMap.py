@@ -1,7 +1,8 @@
 import pygame
-from enum import Enum
+from enum import Enum, IntEnum
 import numpy as np
 from snakeBody import SnakeBody, Direction
+from enums import GameMode
 
 class MapTile(Enum):
     EMPTY = 1
@@ -9,6 +10,10 @@ class MapTile(Enum):
     HEAD = 3
     BODY = 4
     APPLE = 5
+
+class SnakePlayer(IntEnum):
+    FIRST = 0
+    SECOND = 1
 
 class GameMap:
     mapSizeX = 40
@@ -19,7 +24,7 @@ class GameMap:
     surface = pygame.display.set_mode((mapSizeX * tileSize, mapSizeY * tileSize))
     mapBeginningX = (1080 - mapSizeX * tileSize) / 2
     mapBeginningY = 100
-    snake = None
+    snakes = []
     wallColor = (127, 127, 127)
     emptyColor = (9, 0, 99)
     headColor = (29, 135, 37)
@@ -27,9 +32,19 @@ class GameMap:
     appleColor = (255, 0, 0)
     appleX = 0
     appleY = 0
+    gameMode = GameMode.SINGLE
 
-    def __init__(self):
-        self.snake = SnakeBody(self.mapSizeX / 2, self.mapSizeY / 2, Direction.NORTH, [])
+    def __init__(self, gameMode):
+        self.gameMode = gameMode
+        if self.gameMode == gameMode.DUAL:
+            self.mapSizeX = 80
+            self.mapContent = [None] * self.mapSizeX
+            GameMap.tileSize = 12
+            GameMap.mapBeginningX = (1080 - self.mapSizeX * GameMap.tileSize) / 2
+            self.snakes.append(SnakeBody(1, 1, Direction.SOUTH, []))
+            self.snakes.append(SnakeBody(78, 38, Direction.NORTH, []))
+        else:
+            self.snakes.append(SnakeBody(self.mapSizeX / 2, self.mapSizeY / 2, Direction.NORTH, []))
         self.appleX = 0
         self.appleY = 0
         self.clearMap()
@@ -40,7 +55,7 @@ class GameMap:
         self.mapSizeY = mapSizeY
 
     def setSnake(self, snake):
-        self.snake = snake
+        self.snakes = [snake]
 
     def render(self):
         self.clearMap()
@@ -63,7 +78,7 @@ class GameMap:
                 pygame.draw.rect(self.surface, color, pygame.Rect(tileX, tileY, GameMap.tileSize, GameMap.tileSize))
 
     def resetGame(self):
-        self.snake = SnakeBody(self.mapSizeX / 2, self.mapSizeY / 2, Direction.NORTH, [])
+        self.snakes = [SnakeBody(self.mapSizeX / 2, self.mapSizeY / 2, Direction.NORTH, [])]
 
     def clearMap(self):
         for i in range(self.mapSizeX):
@@ -77,20 +92,24 @@ class GameMap:
                     self.mapContent[i][j] = MapTile.EMPTY
 
     def putSnakeOnMap(self):
-        for part in self.snake.bodyParts:
+        for part in self.snakes[SnakePlayer.FIRST].bodyParts:
             self.mapContent[part[0]][part[1]] = MapTile.BODY
-        self.mapContent[self.snake.x][self.snake.y] = MapTile.HEAD
+        self.mapContent[self.snakes[SnakePlayer.FIRST].x][self.snakes[0].y] = MapTile.HEAD
+        if self.gameMode == GameMode.DUAL:
+            for part in self.snakes[SnakePlayer.SECOND].bodyParts:
+                self.mapContent[part[0]][part[1]] = MapTile.BODY
+            self.mapContent[self.snakes[SnakePlayer.SECOND].x][self.snakes[SnakePlayer.SECOND].y] = MapTile.HEAD
 
     def checkCollision(self):
-        if self.mapContent[self.snake.x][self.snake.y] == MapTile.WALL or self.snake.checkBodyCollision() == True:
+        if self.mapContent[self.snakes[SnakePlayer.FIRST].x][self.snakes[SnakePlayer.FIRST].y] == MapTile.WALL or self.snakes[SnakePlayer.FIRST].checkBodyCollision() == True:
             self.putSnakeOnMap()
             return True
         return False
 
     def saveMap(self, f, score):
         f.write(str(self.mapSizeX) + ',' + str(self.mapSizeY) + '\n')
-        f.write(str(self.snake.direction.value) + '\n')
-        f.write(str(self.snake.bodyParts) + '\n')
+        f.write(str(self.snakes[SnakePlayer.FIRST].direction.value) + '\n')
+        f.write(str(self.snakes[SnakePlayer.FIRST].bodyParts) + '\n')
         f.write(str(score) + '\n')
         for i in range(self.mapSizeX):
             for j in range(self.mapSizeY):
