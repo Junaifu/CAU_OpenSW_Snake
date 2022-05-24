@@ -41,10 +41,9 @@ class GameMap:
             self.mapContent = [None] * self.mapSizeX
             GameMap.tileSize = 12
             GameMap.mapBeginningX = (1080 - self.mapSizeX * GameMap.tileSize) / 2
-            self.snakes.append(SnakeBody(1, 1, Direction.SOUTH, []))
-            self.snakes.append(SnakeBody(78, 38, Direction.NORTH, []))
+            self.snakes = [SnakeBody(78, 38, Direction.NORTH, []), SnakeBody(1, 1, Direction.SOUTH, [])]
         else:
-            self.snakes.append(SnakeBody(self.mapSizeX / 2, self.mapSizeY / 2, Direction.NORTH, []))
+            self.snakes = [SnakeBody(self.mapSizeX / 2, self.mapSizeY / 2, Direction.NORTH, [])]
         self.appleX = 0
         self.appleY = 0
         self.clearMap()
