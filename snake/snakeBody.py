@@ -20,7 +20,7 @@ class SnakeBody:
         self.bodyParts = parts
         self.size = len(parts)
     
-    def move(self, appleX, appleY):
+    def move(self, apples):
         oldX = self.x
         oldY = self.y
         if self.direction == Direction.NORTH:
@@ -31,7 +31,10 @@ class SnakeBody:
             self.x += 1
         else:
             self.x -= 1
-        isOnApple = self.x == appleX and self.y == appleY
+        if (self.x, self.y) in apples:
+            isOnApple = True
+        else:
+            isOnApple = False
         self.moveBody(oldX, oldY, isOnApple)
         return isOnApple
     

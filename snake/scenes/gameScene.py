@@ -39,7 +39,7 @@ class GameScene(SceneBase):
 
     def Update(self):
         if self.gameMode == GameMode.SINGLE:
-            isOnApple = self.gameMap.snakes[SnakePlayer.FIRST].move(self.gameMap.appleX, self.gameMap.appleY)
+            isOnApple = self.gameMap.snakes[SnakePlayer.FIRST].move(self.gameMap.apples)
             if isOnApple == True:
                 self.score += 10
             if self.gameMap.checkCollision() == True:
@@ -48,8 +48,8 @@ class GameScene(SceneBase):
         if self.gameMode == GameMode.AUTO:
             print("Auto")
         if self.gameMode == GameMode.DUAL:
-            self.gameMap.snakes[SnakePlayer.FIRST].move(self.gameMap.appleX, self.gameMap.appleY)
-            self.gameMap.snakes[SnakePlayer.SECOND].move(self.gameMap.appleX, self.gameMap.appleY)
+            self.gameMap.snakes[SnakePlayer.FIRST].move(self.gameMap.apples)
+            self.gameMap.snakes[SnakePlayer.SECOND].move(self.gameMap.apples)
 
 
     def Render(self):
