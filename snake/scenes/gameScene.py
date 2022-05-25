@@ -1,6 +1,6 @@
 from scenes.sceneBase import *
 from utils.text import Text
-from gameMap import GameMap
+from gameMap import GameMap, SnakePlayer
 from scenes.inGameMenuScene import InGameMenuScene
 from snakeBody import Direction
 from scenes.gameOverScene import GameOverScene
@@ -17,7 +17,7 @@ class GameScene(SceneBase):
         pygame.display.set_caption("Snake")
         App.fps = 80
         self.score = score
-        self.gameMap = map if map else GameMap()
+        self.gameMap = map if map else GameMap(gameMode)
 
     def loadGameScene(self, gameMap, score):
         self.gameMap = gameMap
@@ -31,13 +31,13 @@ class GameScene(SceneBase):
             App.isPaused = True
         if self.gameMode == GameMode.SINGLE:
             if pressed_keys[pygame.K_LEFT]:
-                self.gameMap.snake.changeDirection(Direction.WEST)
+                self.gameMap.snakes[SnakePlayer.FIRST].changeDirection(Direction.WEST)
             elif pressed_keys[pygame.K_RIGHT]:
-                self.gameMap.snake.changeDirection(Direction.EAST)
+                self.gameMap.snakes[SnakePlayer.FIRST].changeDirection(Direction.EAST)
             elif pressed_keys[pygame.K_UP]:
-                self.gameMap.snake.changeDirection(Direction.NORTH)
+                self.gameMap.snakes[SnakePlayer.FIRST].changeDirection(Direction.NORTH)
             elif pressed_keys[pygame.K_DOWN]:
-                self.gameMap.snake.changeDirection(Direction.SOUTH)
+                self.gameMap.snakes[SnakePlayer.FIRST].changeDirection(Direction.SOUTH)
         if self.gameMode == GameMode.AUTO:
             print("Auto")
         if self.gameMode == GameMode.DUAL:
@@ -45,7 +45,7 @@ class GameScene(SceneBase):
 
     def Update(self):
         if self.gameMode == GameMode.SINGLE:
-            isOnApple = self.gameMap.snake.move(self.gameMap.appleX, self.gameMap.appleY)
+            isOnApple = self.gameMap.snakes[SnakePlayer.FIRST].move(self.gameMap.appleX, self.gameMap.appleY)
             if isOnApple == True:
                 self.score += 10
             if self.gameMap.checkCollision() == True:
@@ -54,7 +54,8 @@ class GameScene(SceneBase):
         if self.gameMode == GameMode.AUTO:
             print("Auto")
         if self.gameMode == GameMode.DUAL:
-            print("Dual")
+            self.gameMap.snakes[SnakePlayer.FIRST].move(self.gameMap.appleX, self.gameMap.appleY)
+            self.gameMap.snakes[SnakePlayer.SECOND].move(self.gameMap.appleX, self.gameMap.appleY)
 
 
     def Render(self):
@@ -66,4 +67,4 @@ class GameScene(SceneBase):
         if self.gameMode == GameMode.AUTO:
             print("Auto")
         if self.gameMode == GameMode.DUAL:
-            print("Dual")
+            self.gameMap.render()
