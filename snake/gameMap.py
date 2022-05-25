@@ -30,8 +30,7 @@ class GameMap:
     headColor = (29, 135, 37)
     bodyColor = (5, 228, 0)
     appleColor = (255, 0, 0)
-    appleX = 0
-    appleY = 0
+    apples = []
     gameMode = GameMode.SINGLE
 
     def __init__(self, gameMode):
@@ -42,10 +41,10 @@ class GameMap:
             GameMap.tileSize = 12
             GameMap.mapBeginningX = (1080 - self.mapSizeX * GameMap.tileSize) / 2
             self.snakes = [SnakeBody(78, 38, Direction.NORTH, []), SnakeBody(1, 1, Direction.SOUTH, [])]
+            self.apples = [(0, 0), (0, 0)]
         else:
             self.snakes = [SnakeBody(self.mapSizeX / 2, self.mapSizeY / 2, Direction.NORTH, [])]
-        self.appleX = 0
-        self.appleY = 0
+            self.apples = [(0, 0)]
         self.clearMap()
 
     def setMap(self, mapContent, mapSizeX, mapSizeY):
@@ -85,7 +84,7 @@ class GameMap:
             for j in range(self.mapSizeY):
                 if i == 0 or i == self.mapSizeX - 1 or j == 0 or j == self.mapSizeY - 1:
                     self.mapContent[i][j] = MapTile.WALL
-                elif i == self.appleX and j == self.appleY:
+                elif (i, j) in self.apples:
                     self.mapContent[i][j] = MapTile.APPLE
                 else:
                     self.mapContent[i][j] = MapTile.EMPTY
@@ -128,8 +127,8 @@ class GameMap:
 
     ## Apple
 
-    def isThereAppleOnMap(self):
-        if self.mapContent[self.appleX][self.appleY] == MapTile.APPLE:
+    def isThereAppleOnMap(self, apple):
+        if self.mapContent[apple[0]][apple[1]] == MapTile.APPLE:
             return True
         return False
 
@@ -144,10 +143,10 @@ class GameMap:
         while (self.mapContent[x][y] != MapTile.EMPTY):
             x,y = self.randGeneration()
         self.mapContent[x][y] = MapTile.APPLE
-        self.appleX = x
-        self.appleY = y
+        return (x, y)
 
     def appleManagement(self):
-        hasApple = self.isThereAppleOnMap()
-        if not hasApple:
-            self.putAppleOnMap()
+        for i in range(len(self.apples)):
+            hasApple = self.isThereAppleOnMap(self.apples[i])
+            if not hasApple:
+                self.apples[i] = self.putAppleOnMap()
