@@ -39,31 +39,65 @@ class GameScene(SceneBase):
             elif pressed_keys[pygame.K_DOWN]:
                 self.gameMap.snake.changeDirection(Direction.SOUTH)
         if self.gameMode == GameMode.AUTO:
-            print("Auto")
+            self.AutoMode()
         if self.gameMode == GameMode.DUAL:
             print("Dual")
 
     def Update(self):
-        if self.gameMode == GameMode.SINGLE:
-            isOnApple = self.gameMap.snake.move(self.gameMap.appleX, self.gameMap.appleY)
-            if isOnApple == True:
-                self.score += 10
-            if self.gameMap.checkCollision() == True:
-                self.gameMap.render()
-                self.SwitchToScene(GameOverScene(self.score))
-        if self.gameMode == GameMode.AUTO:
-            print("Auto")
-        if self.gameMode == GameMode.DUAL:
-            print("Dual")
+        isOnApple = self.gameMap.snake.move(self.gameMap.appleX, self.gameMap.appleY)
+        if isOnApple == True:
+            self.score += 10
+        if self.gameMap.checkCollision() == True:
+            self.gameMap.render()
+            self.SwitchToScene(GameOverScene(self.gameMode, self.score))
+        # if self.gameMode == GameMode.DUAL:
+        #     print("Dual")
 
 
     def Render(self):
         App.screen.fill(pygame.Color("Black"))
-        if self.gameMode == GameMode.SINGLE:
+        if self.gameMode != GameMode.DUAL:
             t = Text("Score: " + str(self.score), (400, 30))
             t.draw()
-            self.gameMap.render()
-        if self.gameMode == GameMode.AUTO:
-            print("Auto")
-        if self.gameMode == GameMode.DUAL:
-            print("Dual")
+        self.gameMap.render()
+        # if self.gameMode == GameMode.DUAL:
+        #     print("Dual")
+
+    def AutoMode(self):
+        snake = self.gameMap.snake
+        snakeX = self.gameMap.snake.x
+        snakeY = self.gameMap.snake.y
+        # westMove = (snakeX - 1, snakeY)
+        # eastMove = (snakeX + 1, snakeY)
+        # northMove = (snakeX, snakeY - 1)
+        # southMove = (snakeX, snakeY + 1)
+
+        if snakeX > self.gameMap.appleX and snake.direction != Direction.EAST:
+            snake.changeDirection(Direction.WEST)
+        if snakeX < self.gameMap.appleX and snake.direction != Direction.WEST:
+            snake.changeDirection(Direction.EAST)
+        if snakeY > self.gameMap.appleY and snake.direction != Direction.SOUTH:
+            snake.changeDirection(Direction.NORTH)
+        if snakeY < self.gameMap.appleY and snake.direction != Direction.NORTH:
+            snake.changeDirection(Direction.SOUTH)
+
+    ## too instable algo
+
+        # if snakeX > self.gameMap.appleX and snake.direction != Direction.EAST and snake.bodyParts.count(westMove) == 0:
+        #     snake.changeDirection(Direction.WEST)
+        # if snakeX < self.gameMap.appleX and snake.direction != Direction.WEST and snake.bodyParts.count(eastMove) == 0:
+        #     snake.changeDirection(Direction.EAST)
+        # else: #when snakeX == appleX
+        #     if snakeY > self.gameMap.appleY and snake.bodyParts.count(northMove) == 0:
+        #         snake.changeDirection(Direction.NORTH)
+        #     else:
+        #         snake.changeDirection(Direction.SOUTH)
+        # if snakeY > self.gameMap.appleY and snake.direction != Direction.SOUTH and snake.bodyParts.count(northMove) == 0:
+        #     snake.changeDirection(Direction.NORTH)
+        # elif snakeY < self.gameMap.appleY and snake.direction != Direction.NORTH and snake.bodyParts.count(southMove) == 0:
+        #     snake.changeDirection(Direction.SOUTH)
+        # else:
+        #     if snakeX > self.gameMap.appleX  and snake.bodyParts.count(westMove) == 0:
+        #         snake.changeDirection(Direction.WEST)
+        #     else:
+        #         snake.changeDirection(Direction.EAST)
