@@ -1,10 +1,10 @@
-from enum import Enum
+from enum import IntEnum
 
-class Direction(Enum):
-    NORTH = 1
-    SOUTH = 2
-    EAST = 3
-    WEST = 4
+class Direction(IntEnum):
+    NORTH = 0
+    SOUTH = 1
+    EAST = 2
+    WEST = 3
 
 class SnakeBody:
     x = 0
@@ -50,6 +50,16 @@ class SnakeBody:
         if isOnApple == True:
             self.bodyParts.append(newPart)
     
+    def handleInputs(self, pressed_keys, keysList):
+        if pressed_keys[keysList[Direction.NORTH]]:
+            self.changeDirection(Direction.NORTH)
+        elif pressed_keys[keysList[Direction.SOUTH]]:
+            self.changeDirection(Direction.SOUTH)
+        elif pressed_keys[keysList[Direction.EAST]]:
+            self.changeDirection(Direction.EAST)
+        elif pressed_keys[keysList[Direction.WEST]]:
+            self.changeDirection(Direction.WEST)
+
     def changeDirection(self, newDirection):
         if (newDirection == Direction.NORTH and self.direction == Direction.SOUTH or
             newDirection == Direction.SOUTH and self.direction == Direction.NORTH or

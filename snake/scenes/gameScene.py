@@ -30,18 +30,12 @@ class GameScene(SceneBase):
             # Pause the game
             App.isPaused = True
         if self.gameMode == GameMode.SINGLE:
-            if pressed_keys[pygame.K_LEFT]:
-                self.gameMap.snakes[SnakePlayer.FIRST].changeDirection(Direction.WEST)
-            elif pressed_keys[pygame.K_RIGHT]:
-                self.gameMap.snakes[SnakePlayer.FIRST].changeDirection(Direction.EAST)
-            elif pressed_keys[pygame.K_UP]:
-                self.gameMap.snakes[SnakePlayer.FIRST].changeDirection(Direction.NORTH)
-            elif pressed_keys[pygame.K_DOWN]:
-                self.gameMap.snakes[SnakePlayer.FIRST].changeDirection(Direction.SOUTH)
+            self.gameMap.snakes[SnakePlayer.FIRST].handleInputs(pressed_keys, [pygame.K_UP, pygame.K_DOWN, pygame.K_RIGHT, pygame.K_LEFT])
         if self.gameMode == GameMode.AUTO:
             print("Auto")
         if self.gameMode == GameMode.DUAL:
-            print("Dual")
+            self.gameMap.snakes[SnakePlayer.FIRST].handleInputs(pressed_keys, [pygame.K_UP, pygame.K_DOWN, pygame.K_RIGHT, pygame.K_LEFT])
+            self.gameMap.snakes[SnakePlayer.SECOND].handleInputs(pressed_keys, [pygame.K_w, pygame.K_s, pygame.K_d, pygame.K_a])
 
     def Update(self):
         if self.gameMode == GameMode.SINGLE:
