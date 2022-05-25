@@ -39,12 +39,14 @@ class GameMap:
             self.mapSizeX = 80
             self.mapContent = [None] * self.mapSizeX
             GameMap.tileSize = 12
-            GameMap.mapBeginningX = (1080 - self.mapSizeX * GameMap.tileSize) / 2
             self.snakes = [SnakeBody(78, 38, Direction.NORTH, []), SnakeBody(1, 1, Direction.SOUTH, [])]
             self.apples = [(0, 0), (0, 0)]
         else:
             self.snakes = [SnakeBody(self.mapSizeX / 2, self.mapSizeY / 2, Direction.NORTH, [])]
             self.apples = [(0, 0)]
+            GameMap.tileSize = 15
+            self.mapSizeX = 40
+        GameMap.mapBeginningX = (1080 - self.mapSizeX * GameMap.tileSize) / 2
         self.clearMap()
 
     def setMap(self, mapContent, mapSizeX, mapSizeY):
@@ -101,6 +103,24 @@ class GameMap:
     def checkCollision(self):
         if self.mapContent[self.snakes[SnakePlayer.FIRST].x][self.snakes[SnakePlayer.FIRST].y] == MapTile.WALL or self.snakes[SnakePlayer.FIRST].checkBodyCollision() == True:
             self.putSnakeOnMap()
+            return True
+        return False
+    
+    def checkCollisionSecondSnake(self):
+        if self.mapContent[self.snakes[SnakePlayer.SECOND].x][self.snakes[SnakePlayer.SECOND].y] == MapTile.WALL or self.snakes[SnakePlayer.SECOND].checkBodyCollision() == True:
+            self.putSnakeOnMap()
+            return True
+        return False
+    
+    def checkCollisionFirstWithSecond(self):
+        if ((self.snakes[SnakePlayer.FIRST].x, self.snakes[SnakePlayer.FIRST].y) in self.snakes[SnakePlayer.SECOND].bodyParts or
+            (self.snakes[SnakePlayer.FIRST].x, self.snakes[SnakePlayer.FIRST].y) == (self.snakes[SnakePlayer.SECOND].x, self.snakes[SnakePlayer.SECOND].y)):
+            return True
+        return False
+
+    def checkCollisionSecondWithFirst(self):
+        if ((self.snakes[SnakePlayer.SECOND].x, self.snakes[SnakePlayer.SECOND].y) in self.snakes[SnakePlayer.FIRST].bodyParts or
+            (self.snakes[SnakePlayer.FIRST].x, self.snakes[SnakePlayer.FIRST].y) == (self.snakes[SnakePlayer.SECOND].x, self.snakes[SnakePlayer.SECOND].y)):
             return True
         return False
 

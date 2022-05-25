@@ -50,7 +50,12 @@ class GameScene(SceneBase):
         if self.gameMode == GameMode.DUAL:
             self.gameMap.snakes[SnakePlayer.FIRST].move(self.gameMap.apples)
             self.gameMap.snakes[SnakePlayer.SECOND].move(self.gameMap.apples)
-
+            if self.gameMap.checkCollision() == True or self.gameMap.checkCollisionFirstWithSecond() == True:
+                self.gameMap.render()
+                self.SwitchToScene(GameOverScene(1, self.gameMode))
+            if self.gameMap.checkCollisionSecondSnake() == True or self.gameMap.checkCollisionSecondWithFirst() == True:
+                self.gameMap.render()
+                self.SwitchToScene(GameOverScene(2, self.gameMode))
 
     def Render(self):
         App.screen.fill(pygame.Color("Black"))
