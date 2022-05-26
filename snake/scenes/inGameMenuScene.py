@@ -28,7 +28,8 @@ class InGameMenuScene(SceneBase):
         self.restartButton = Button("RESTART", 455, 300, self.goBackToGame, True)
         if (self.gameMode == GameMode.SINGLE):
             self.saveButton = Button("SAVE", 480, 400, lambda params: self.saveBackup())
-        self.exitButton = Button("EXIT", 490, 500, lambda params: self.Terminate())
+        self.exitButton = Button("EXIT", 490, 500, self.mainMenuCallback)
+
 
     def goBackToGame(self, params):
         App.isPaused = False
@@ -45,6 +46,10 @@ class InGameMenuScene(SceneBase):
         f = open(self.filePath + filename, "a")
         self.gameMap.saveMap(f, self.score)
         f.close()
+        App.isPaused = False
+        self.SwitchToScene(scenes.menuScene.MenuScene())
+
+    def mainMenuCallback(self, params):
         App.isPaused = False
         self.SwitchToScene(scenes.menuScene.MenuScene())
 
