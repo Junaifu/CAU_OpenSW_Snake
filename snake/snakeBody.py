@@ -19,6 +19,9 @@ class SnakeBody:
         self.direction = snakeDir
         self.bodyParts = parts
         self.size = len(parts)
+        self.nextMove = self.direction;
+        self.nextNextMove = None;
+        self.lastMove = self.direction;
     
     def move(self, apples):
         oldX = self.x
@@ -76,3 +79,6 @@ class SnakeBody:
             if part[0] == self.x and part[1] == self.y:
                 return True
         return False
+    
+    def setNextMove(self, direction):
+        self.nextMove = direction;
