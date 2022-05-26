@@ -79,15 +79,18 @@ class GameOverScene(SceneBase):
         t = Text("Game Over", (350, 100))
         t.draw()
         if self.gameMode == GameMode.DUAL:
-            winnerText = Text("Snake " + str(self.score) + " won the game", (130, 200))
+            winnerText = Text("Player " + str(self.score) + " won the game", (130, 200))
             winnerText.draw()
         else:
-            scoreText = Text("Your score: " + str(self.score), (270, 200))
+            if (self.gameMode == GameMode.SINGLE):
+                scoreText = Text("Your score: " + str(self.score), (270, 200))
+                playerNameText = Text("Enter your name:", (200, 300))
+                playerNameText.draw()
+                self.textInput.draw()
+                self.playAgainButton.draw()
+            else:
+                scoreText = Text("Bot's score: " + str(self.score), (270, 200))
             scoreText.draw()
-            playerNameText = Text("Enter your name:", (200, 300))
-            playerNameText.draw()
-            self.textInput.draw()
-            self.playAgainButton.draw()
         self.mainMenuButton.draw()
 
     def getRankingFileContent(self):
