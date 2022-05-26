@@ -1,7 +1,8 @@
 import pygame
-from enum import Enum
+from enum import Enum, IntEnum
 import numpy as np
 from snakeBody import SnakeBody, Direction
+from enums import GameMode
 
 class MapTile(Enum):
     EMPTY = 1
@@ -9,6 +10,10 @@ class MapTile(Enum):
     HEAD = 3
     BODY = 4
     APPLE = 5
+
+class SnakePlayer(IntEnum):
+    FIRST = 0
+    SECOND = 1
 
 class GameMap:
     mapSizeX = 40
@@ -19,19 +24,29 @@ class GameMap:
     surface = pygame.display.set_mode((mapSizeX * tileSize, mapSizeY * tileSize))
     mapBeginningX = (1080 - mapSizeX * tileSize) / 2
     mapBeginningY = 100
-    snake = None
+    snakes = []
     wallColor = (127, 127, 127)
     emptyColor = (9, 0, 99)
     headColor = (29, 135, 37)
     bodyColor = (5, 228, 0)
     appleColor = (255, 0, 0)
-    appleX = 0
-    appleY = 0
+    apples = []
+    gameMode = GameMode.SINGLE
 
-    def __init__(self):
-        self.snake = SnakeBody(self.mapSizeX / 2, self.mapSizeY / 2, Direction.NORTH, [])
-        self.appleX = 0
-        self.appleY = 0
+    def __init__(self, gameMode):
+        self.gameMode = gameMode
+        if self.gameMode == gameMode.DUAL:
+            self.mapSizeX = 80
+            self.mapContent = [None] * self.mapSizeX
+            GameMap.tileSize = 12
+            self.snakes = [SnakeBody(78, 38, Direction.NORTH, []), SnakeBody(1, 1, Direction.SOUTH, [])]
+            self.apples = [(0, 0), (0, 0)]
+        else:
+            self.snakes = [SnakeBody(self.mapSizeX / 2, self.mapSizeY / 2, Direction.NORTH, [])]
+            self.apples = [(0, 0)]
+            GameMap.tileSize = 15
+            self.mapSizeX = 40
+        GameMap.mapBeginningX = (1080 - self.mapSizeX * GameMap.tileSize) / 2
         self.clearMap()
 
     def setMap(self, mapContent, mapSizeX, mapSizeY):
@@ -40,7 +55,7 @@ class GameMap:
         self.mapSizeY = mapSizeY
 
     def setSnake(self, snake):
-        self.snake = snake
+        self.snakes = [snake]
 
     def render(self):
         self.clearMap()
@@ -63,7 +78,7 @@ class GameMap:
                 pygame.draw.rect(self.surface, color, pygame.Rect(tileX, tileY, GameMap.tileSize, GameMap.tileSize))
 
     def resetGame(self):
-        self.snake = SnakeBody(self.mapSizeX / 2, self.mapSizeY / 2, Direction.NORTH, [])
+        self.snakes = [SnakeBody(self.mapSizeX / 2, self.mapSizeY / 2, Direction.NORTH, [])]
 
     def clearMap(self):
         for i in range(self.mapSizeX):
@@ -71,26 +86,48 @@ class GameMap:
             for j in range(self.mapSizeY):
                 if i == 0 or i == self.mapSizeX - 1 or j == 0 or j == self.mapSizeY - 1:
                     self.mapContent[i][j] = MapTile.WALL
-                elif i == self.appleX and j == self.appleY:
+                elif (i, j) in self.apples:
                     self.mapContent[i][j] = MapTile.APPLE
                 else:
                     self.mapContent[i][j] = MapTile.EMPTY
 
     def putSnakeOnMap(self):
-        for part in self.snake.bodyParts:
+        for part in self.snakes[SnakePlayer.FIRST].bodyParts:
             self.mapContent[part[0]][part[1]] = MapTile.BODY
-        self.mapContent[self.snake.x][self.snake.y] = MapTile.HEAD
+        self.mapContent[self.snakes[SnakePlayer.FIRST].x][self.snakes[0].y] = MapTile.HEAD
+        if self.gameMode == GameMode.DUAL:
+            for part in self.snakes[SnakePlayer.SECOND].bodyParts:
+                self.mapContent[part[0]][part[1]] = MapTile.BODY
+            self.mapContent[self.snakes[SnakePlayer.SECOND].x][self.snakes[SnakePlayer.SECOND].y] = MapTile.HEAD
 
     def checkCollision(self):
-        if self.mapContent[self.snake.x][self.snake.y] == MapTile.WALL or self.snake.checkBodyCollision() == True:
+        if self.mapContent[self.snakes[SnakePlayer.FIRST].x][self.snakes[SnakePlayer.FIRST].y] == MapTile.WALL or self.snakes[SnakePlayer.FIRST].checkBodyCollision() == True:
             self.putSnakeOnMap()
+            return True
+        return False
+    
+    def checkCollisionSecondSnake(self):
+        if self.mapContent[self.snakes[SnakePlayer.SECOND].x][self.snakes[SnakePlayer.SECOND].y] == MapTile.WALL or self.snakes[SnakePlayer.SECOND].checkBodyCollision() == True:
+            self.putSnakeOnMap()
+            return True
+        return False
+    
+    def checkCollisionFirstWithSecond(self):
+        if ((self.snakes[SnakePlayer.FIRST].x, self.snakes[SnakePlayer.FIRST].y) in self.snakes[SnakePlayer.SECOND].bodyParts or
+            (self.snakes[SnakePlayer.FIRST].x, self.snakes[SnakePlayer.FIRST].y) == (self.snakes[SnakePlayer.SECOND].x, self.snakes[SnakePlayer.SECOND].y)):
+            return True
+        return False
+
+    def checkCollisionSecondWithFirst(self):
+        if ((self.snakes[SnakePlayer.SECOND].x, self.snakes[SnakePlayer.SECOND].y) in self.snakes[SnakePlayer.FIRST].bodyParts or
+            (self.snakes[SnakePlayer.FIRST].x, self.snakes[SnakePlayer.FIRST].y) == (self.snakes[SnakePlayer.SECOND].x, self.snakes[SnakePlayer.SECOND].y)):
             return True
         return False
 
     def saveMap(self, f, score):
         f.write(str(self.mapSizeX) + ',' + str(self.mapSizeY) + '\n')
-        f.write(str(self.snake.direction.value) + '\n')
-        f.write(str(self.snake.bodyParts) + '\n')
+        f.write(str(self.snakes[SnakePlayer.FIRST].direction.value) + '\n')
+        f.write(str(self.snakes[SnakePlayer.FIRST].bodyParts) + '\n')
         f.write(str(score) + '\n')
         for i in range(self.mapSizeX):
             for j in range(self.mapSizeY):
@@ -110,8 +147,8 @@ class GameMap:
 
     ## Apple
 
-    def isThereAppleOnMap(self):
-        if self.mapContent[self.appleX][self.appleY] == MapTile.APPLE:
+    def isThereAppleOnMap(self, apple):
+        if self.mapContent[apple[0]][apple[1]] == MapTile.APPLE:
             return True
         return False
 
@@ -126,86 +163,86 @@ class GameMap:
         while (self.mapContent[x][y] != MapTile.EMPTY):
             x,y = self.randGeneration()
         self.mapContent[x][y] = MapTile.APPLE
-        self.appleX = x
-        self.appleY = y
+        return (x, y)
 
     def appleManagement(self):
-        hasApple = self.isThereAppleOnMap()
-        if not hasApple:
-            self.putAppleOnMap()
+        for i in range(len(self.apples)):
+            hasApple = self.isThereAppleOnMap(self.apples[i])
+            if not hasApple:
+                self.apples[i] = self.putAppleOnMap()
 
     def checkHorizontalSnakeBody(self):
-        snakeBodyPartVertical = [position for position in self.snake.bodyParts if position[1] == self.snake.y]
+        snakeBodyPartVertical = [position for position in self.snakes[SnakePlayer.FIRST].bodyParts if position[1] == self.snakes[SnakePlayer.FIRST].y]
         if (snakeBodyPartVertical):
-            snakeBodyPartVerticalNorth = [position for position in snakeBodyPartVertical if position[1] < self.snake.y]
-            snakeBodyPartVerticalSouth = [position for position in snakeBodyPartVertical if position[1] > self.snake.y]
+            snakeBodyPartVerticalNorth = [position for position in snakeBodyPartVertical if position[1] < self.snakes[SnakePlayer.FIRST].y]
+            snakeBodyPartVerticalSouth = [position for position in snakeBodyPartVertical if position[1] > self.snakes[SnakePlayer.FIRST].y]
             if not snakeBodyPartVerticalNorth:
-                self.snake.setNextMove(Direction.NORTH)
+                self.snakes[SnakePlayer.FIRST].setNextMove(Direction.NORTH)
                 return
             if not snakeBodyPartVerticalSouth:
-                self.snake.setNextMove(Direction.SOUTH)
+                self.snakes[SnakePlayer.FIRST].setNextMove(Direction.SOUTH)
                 return
-            maxDistance = max(snakeBodyPartVertical, key = lambda t: abs(t[1] - self.snake.y))
-            self.snake.setNextMove(Direction.NORTH)
-            if (maxDistance[1] > self.snake.y):
-                self.snake.setNextMove(Direction.SOUTH)
+            maxDistance = max(snakeBodyPartVertical, key = lambda t: abs(t[1] - self.snakes[SnakePlayer.FIRST].y))
+            self.snakes[SnakePlayer.FIRST].setNextMove(Direction.NORTH)
+            if (maxDistance[1] > self.snakes[SnakePlayer.FIRST].y):
+                self.snakes[SnakePlayer.FIRST].setNextMove(Direction.SOUTH)
         else:
-            self.snake.setNextMove(Direction.NORTH)
-            if (self.appleY > self.snake.y):
-                self.snake.setNextMove(Direction.SOUTH)
+            self.snakes[SnakePlayer.FIRST].setNextMove(Direction.NORTH)
+            if (self.apples[0][1] > self.snakes[SnakePlayer.FIRST].y):
+                self.snakes[SnakePlayer.FIRST].setNextMove(Direction.SOUTH)
 
     def checkVerticalSnakeBody(self):
-        snakeBodyPartHorizontal = [position for position in self.snake.bodyParts if position[0] == self.snake.x]
+        snakeBodyPartHorizontal = [position for position in self.snakes[SnakePlayer.FIRST].bodyParts if position[0] == self.snakes[SnakePlayer.FIRST].x]
         if (snakeBodyPartHorizontal):
-            snakeBodyPartHorizontalWest = [position for position in snakeBodyPartHorizontal if position[0] < self.snake.x]
-            snakeBodyPartHorizontalEast = [position for position in snakeBodyPartHorizontal if position[0] > self.snake.x]
+            snakeBodyPartHorizontalWest = [position for position in snakeBodyPartHorizontal if position[0] < self.snakes[SnakePlayer.FIRST].x]
+            snakeBodyPartHorizontalEast = [position for position in snakeBodyPartHorizontal if position[0] > self.snakes[SnakePlayer.FIRST].x]
             if not snakeBodyPartHorizontalWest:
-                self.snake.setNextMove(Direction.WEST)
+                self.snakes[SnakePlayer.FIRST].setNextMove(Direction.WEST)
                 return
             if not snakeBodyPartHorizontalEast:
-                self.snake.setNextMove(Direction.EAST)
+                self.snakes[SnakePlayer.FIRST].setNextMove(Direction.EAST)
                 return
-            maxDistance = max(snakeBodyPartHorizontal, key = lambda t: abs(t[0] - self.snake.x))
-            self.snake.setNextMove(Direction.WEST)
-            if (maxDistance[0] > self.snake.x):
-                self.snake.setNextMove(Direction.EAST)
+            maxDistance = max(snakeBodyPartHorizontal, key = lambda t: abs(t[0] - self.snakes[SnakePlayer.FIRST].x))
+            self.snakes[SnakePlayer.FIRST].setNextMove(Direction.WEST)
+            if (maxDistance[0] > self.snakes[SnakePlayer.FIRST].x):
+                self.snakes[SnakePlayer.FIRST].setNextMove(Direction.EAST)
         else:
-            self.snake.setNextMove(Direction.WEST)
-            if (self.appleX > self.snake.x):
-                self.snake.setNextMove(Direction.EAST)
+            self.snakes[SnakePlayer.FIRST].setNextMove(Direction.WEST)
+            if (self.apples[0][0] > self.snakes[SnakePlayer.FIRST].x):
+                self.snakes[SnakePlayer.FIRST].setNextMove(Direction.EAST)
     
     def snakeAvoidBody(self):
         offset = 2
-        if self.snake.nextMove == Direction.NORTH and any(pos in self.snake.bodyParts for pos in [(self.snake.x, nextPos) for nextPos in range(self.snake.y, self.snake.y - offset, -1)]):
+        if self.snakes[SnakePlayer.FIRST].nextMove == Direction.NORTH and any(pos in self.snakes[SnakePlayer.FIRST].bodyParts for pos in [(self.snakes[SnakePlayer.FIRST].x, nextPos) for nextPos in range(self.snakes[SnakePlayer.FIRST].y, self.snakes[SnakePlayer.FIRST].y - offset, -1)]):
             self.checkVerticalSnakeBody()
-        if self.snake.nextMove == Direction.SOUTH and any(pos in self.snake.bodyParts for pos in [(self.snake.x, nextPos) for nextPos in range(self.snake.y + 1, self.snake.y + offset)]):
+        if self.snakes[SnakePlayer.FIRST].nextMove == Direction.SOUTH and any(pos in self.snakes[SnakePlayer.FIRST].bodyParts for pos in [(self.snakes[SnakePlayer.FIRST].x, nextPos) for nextPos in range(self.snakes[SnakePlayer.FIRST].y + 1, self.snakes[SnakePlayer.FIRST].y + offset)]):
             self.checkVerticalSnakeBody()
-        if self.snake.nextMove == Direction.WEST and any(pos in self.snake.bodyParts for pos in [(nextPos, self.snake.y) for nextPos in range(self.snake.x, self.snake.x - offset, -1)]):
+        if self.snakes[SnakePlayer.FIRST].nextMove == Direction.WEST and any(pos in self.snakes[SnakePlayer.FIRST].bodyParts for pos in [(nextPos, self.snakes[SnakePlayer.FIRST].y) for nextPos in range(self.snakes[SnakePlayer.FIRST].x, self.snakes[SnakePlayer.FIRST].x - offset, -1)]):
             self.checkHorizontalSnakeBody()
-        if self.snake.nextMove == Direction.EAST and any(pos in self.snake.bodyParts for pos in [(nextPos, self.snake.y) for nextPos in range(self.snake.x + 1, self.snake.x + offset)]):
+        if self.snakes[SnakePlayer.FIRST].nextMove == Direction.EAST and any(pos in self.snakes[SnakePlayer.FIRST].bodyParts for pos in [(nextPos, self.snakes[SnakePlayer.FIRST].y) for nextPos in range(self.snakes[SnakePlayer.FIRST].x + 1, self.snakes[SnakePlayer.FIRST].x + offset)]):
             self.checkHorizontalSnakeBody()
 
     
 
     def snakeNextMove(self):
-        if (self.appleX > self.snake.x and self.snake.direction != Direction.WEST):
-            self.snake.setNextMove(Direction.EAST);
-        elif (self.appleX < self.snake.x and self.snake.direction != Direction.EAST):
-            self.snake.setNextMove(Direction.WEST);
-        elif (self.appleY > self.snake.y and self.snake.direction != Direction.NORTH):
-            self.snake.setNextMove(Direction.SOUTH);
-        elif (self.appleY < self.snake.y and self.snake.direction != Direction.SOUTH):
-            self.snake.setNextMove(Direction.NORTH);
+        if (self.apples[0][0] > self.snakes[SnakePlayer.FIRST].x and self.snakes[SnakePlayer.FIRST].direction != Direction.WEST):
+            self.snakes[SnakePlayer.FIRST].setNextMove(Direction.EAST);
+        elif (self.apples[0][0] < self.snakes[SnakePlayer.FIRST].x and self.snakes[SnakePlayer.FIRST].direction != Direction.EAST):
+            self.snakes[SnakePlayer.FIRST].setNextMove(Direction.WEST);
+        elif (self.apples[0][1] > self.snakes[SnakePlayer.FIRST].y and self.snakes[SnakePlayer.FIRST].direction != Direction.NORTH):
+            self.snakes[SnakePlayer.FIRST].setNextMove(Direction.SOUTH);
+        elif (self.apples[0][1] < self.snakes[SnakePlayer.FIRST].y and self.snakes[SnakePlayer.FIRST].direction != Direction.SOUTH):
+            self.snakes[SnakePlayer.FIRST].setNextMove(Direction.NORTH);
 
         self.snakeAvoidBody()
-        if (self.snake.nextMove == Direction.WEST and self.snake.x - 1 <= 0):
-            self.snake.setNextMove(Direction.SOUTH)
-        if (self.snake.nextMove == Direction.NORTH and self.snake.y - 1 <= 0):
-            self.snake.setNextMove(Direction.EAST)
-        if (self.snake.nextMove == Direction.SOUTH and self.snake.x + 1 >= self.mapSizeX):
-            self.snake.setNextMove(Direction.WEST)
-        if (self.snake.nextMove == Direction.EAST and self.snake.y + 1 >= self.mapSizeY):
-            self.snake.setNextMove(Direction.NORTH)
+        if (self.snakes[SnakePlayer.FIRST].nextMove == Direction.WEST and self.snakes[SnakePlayer.FIRST].x - 1 <= 0):
+            self.snakes[SnakePlayer.FIRST].setNextMove(Direction.SOUTH)
+        if (self.snakes[SnakePlayer.FIRST].nextMove == Direction.NORTH and self.snakes[SnakePlayer.FIRST].y - 1 <= 0):
+            self.snakes[SnakePlayer.FIRST].setNextMove(Direction.EAST)
+        if (self.snakes[SnakePlayer.FIRST].nextMove == Direction.SOUTH and self.snakes[SnakePlayer.FIRST].x + 1 >= self.mapSizeX):
+            self.snakes[SnakePlayer.FIRST].setNextMove(Direction.WEST)
+        if (self.snakes[SnakePlayer.FIRST].nextMove == Direction.EAST and self.snakes[SnakePlayer.FIRST].y + 1 >= self.mapSizeY):
+            self.snakes[SnakePlayer.FIRST].setNextMove(Direction.NORTH)
 
-        self.snake.changeDirection(self.snake.nextMove)
-        self.snake.lastMove = self.snake.nextMove
+        self.snakes[SnakePlayer.FIRST].changeDirection(self.snakes[SnakePlayer.FIRST].nextMove)
+        self.snakes[SnakePlayer.FIRST].lastMove = self.snakes[SnakePlayer.FIRST].nextMove

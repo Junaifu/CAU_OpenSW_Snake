@@ -1,6 +1,6 @@
 from scenes.sceneBase import *
 from utils.text import Text
-from gameMap import GameMap
+from gameMap import GameMap, SnakePlayer
 from scenes.inGameMenuScene import InGameMenuScene
 from snakeBody import Direction
 from scenes.gameOverScene import GameOverScene
@@ -17,7 +17,7 @@ class GameScene(SceneBase):
         pygame.display.set_caption("Snake")
         App.fps = 80
         self.score = score
-        self.gameMap = map if map else GameMap()
+        self.gameMap = map if map else GameMap(gameMode)
 
     def loadGameScene(self, gameMap, score):
         self.gameMap = gameMap
@@ -30,29 +30,30 @@ class GameScene(SceneBase):
             # Pause the game
             App.isPaused = True
         if self.gameMode == GameMode.SINGLE:
-            if pressed_keys[pygame.K_LEFT]:
-                self.gameMap.snake.changeDirection(Direction.WEST)
-            elif pressed_keys[pygame.K_RIGHT]:
-                self.gameMap.snake.changeDirection(Direction.EAST)
-            elif pressed_keys[pygame.K_UP]:
-                self.gameMap.snake.changeDirection(Direction.NORTH)
-            elif pressed_keys[pygame.K_DOWN]:
-                self.gameMap.snake.changeDirection(Direction.SOUTH)
+            self.gameMap.snakes[SnakePlayer.FIRST].handleInputs(pressed_keys, [pygame.K_UP, pygame.K_DOWN, pygame.K_RIGHT, pygame.K_LEFT])
         if self.gameMode == GameMode.AUTO:
             self.gameMap.snakeNextMove()
         if self.gameMode == GameMode.DUAL:
-            print("Dual")
+            self.gameMap.snakes[SnakePlayer.FIRST].handleInputs(pressed_keys, [pygame.K_UP, pygame.K_DOWN, pygame.K_RIGHT, pygame.K_LEFT])
+            self.gameMap.snakes[SnakePlayer.SECOND].handleInputs(pressed_keys, [pygame.K_w, pygame.K_s, pygame.K_d, pygame.K_a])
 
     def Update(self):
         if self.gameMode == GameMode.SINGLE or self.gameMode == GameMode.AUTO:
-            isOnApple = self.gameMap.snake.move(self.gameMap.appleX, self.gameMap.appleY)
+            isOnApple = self.gameMap.snakes[SnakePlayer.FIRST].move(self.gameMap.apples)
             if isOnApple == True:
                 self.score += 10
             if self.gameMap.checkCollision() == True:
                 self.gameMap.render()
                 self.SwitchToScene(GameOverScene(self.score, self.gameMode))
         if self.gameMode == GameMode.DUAL:
-            print("Dual")
+            self.gameMap.snakes[SnakePlayer.FIRST].move(self.gameMap.apples)
+            self.gameMap.snakes[SnakePlayer.SECOND].move(self.gameMap.apples)
+            if self.gameMap.checkCollision() == True or self.gameMap.checkCollisionFirstWithSecond() == True:
+                self.gameMap.render()
+                self.SwitchToScene(GameOverScene(1, self.gameMode))
+            if self.gameMap.checkCollisionSecondSnake() == True or self.gameMap.checkCollisionSecondWithFirst() == True:
+                self.gameMap.render()
+                self.SwitchToScene(GameOverScene(2, self.gameMode))
 
     def Render(self):
         App.screen.fill(pygame.Color("Black"))
@@ -61,4 +62,4 @@ class GameScene(SceneBase):
             t.draw()
             self.gameMap.render()
         if self.gameMode == GameMode.DUAL:
-            print("Dual")
+            self.gameMap.render()
