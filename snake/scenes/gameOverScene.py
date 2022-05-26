@@ -5,6 +5,7 @@ from utils.textInput import TextInput
 from utils.button import Button
 import pygame
 from datetime import datetime
+from enums import GameMode
 
 
 class GameOverScene(SceneBase):
@@ -77,13 +78,17 @@ class GameOverScene(SceneBase):
             self.stars2, (0, App.screenSizeY + self.secondStarsIndex))
         t = Text("Game Over", (350, 100))
         t.draw()
-        scoreText = Text("Your score: " + str(self.score), (270, 200))
-        scoreText.draw()
-        playerNameText = Text("Enter your name:", (200, 300))
-        playerNameText.draw()
-        self.textInput.draw()
+        if self.gameMode == GameMode.DUAL:
+            winnerText = Text("Snake " + str(self.score) + " won the game", (130, 200))
+            winnerText.draw()
+        else:
+            scoreText = Text("Your score: " + str(self.score), (270, 200))
+            scoreText.draw()
+            playerNameText = Text("Enter your name:", (200, 300))
+            playerNameText.draw()
+            self.textInput.draw()
+            self.playAgainButton.draw()
         self.mainMenuButton.draw()
-        self.playAgainButton.draw()
 
     def getRankingFileContent(self):
         try:

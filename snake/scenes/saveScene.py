@@ -92,7 +92,7 @@ class SaveScene(SceneBase):
                 i += 1
             posX, posY = self.getSnakePosition(map)
             snake = SnakeBody(posX, posY, Direction(snakeDirection), snakeParts)
-            gameMap = GameMap()
+            gameMap = GameMap(GameMode.SINGLE)
             gameMap.setSnake(snake)
             gameMap.setMap(map, sizeMap[0], sizeMap[1])
             gameScene = GameScene(GameMode.SINGLE)
