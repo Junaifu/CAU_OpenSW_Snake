@@ -22,12 +22,15 @@ class SceneBase:
         if next_scene == None:
             self.next = next_scene
             return
-        fade = pygame.Surface((App.screenSizeX, App.screenSizeY))
-        for alpha in range(0, 50):
-            fade.set_alpha(alpha, pygame.RLEACCEL)
+        fade = pygame.Surface((App.screenSizeX, App.screenSizeY),  pygame.SRCALPHA)
+        eTime = 0; duration = 1000
+        while eTime < duration:
+            alpha = 255 * eTime/duration
+            fade.fill((0,0,0,alpha))
             App.screen.blit(fade, (0, 0))
             pygame.display.update()
-            pygame.time.delay(25)
+            eTime += 1000/60
+            pygame.time.delay(int(1000/60))
         # for alpha in range (fade.get_alpha(), 0, -1):
         self.next = next_scene
 
