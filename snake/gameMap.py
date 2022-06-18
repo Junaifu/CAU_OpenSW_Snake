@@ -105,7 +105,7 @@ class GameMap:
         self.mapContent[self.snakes[SnakePlayer.FIRST].x][self.snakes[0].y] = MapTile.HEAD
         if self.gameMode == GameMode.DUAL:
             for part in self.snakes[SnakePlayer.SECOND].bodyParts:
-                self.mapContent[part[0]][part[1]] = MapTile.BODY2
+                self.mapContent[part[0]][part[1]] = MapTile.BODY2 # Player2's Color == Blue
             self.mapContent[self.snakes[SnakePlayer.SECOND].x][self.snakes[SnakePlayer.SECOND].y] = MapTile.HEAD2
 
     def checkCollision(self):
