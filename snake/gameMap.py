@@ -10,7 +10,9 @@ class MapTile(Enum):
     HEAD = 3
     BODY = 4
     APPLE = 5
-
+    HEAD2 = 6
+    BODY2 = 7
+    
 class SnakePlayer(IntEnum):
     FIRST = 0
     SECOND = 1
@@ -29,6 +31,8 @@ class GameMap:
     emptyColor = (9, 0, 99)
     headColor = (29, 135, 37)
     bodyColor = (5, 228, 0)
+    headColor2 = (101, 162, 255)
+    bodyColor2 = (165, 201, 255)
     appleColor = (255, 0, 0)
     apples = []
     gameMode = GameMode.SINGLE
@@ -69,6 +73,10 @@ class GameMap:
                     color = GameMap.headColor
                 elif self.mapContent[i][j] == MapTile.BODY:
                     color = GameMap.bodyColor
+                elif self.mapContent[i][j] == MapTile.HEAD2:
+                    color = GameMap.headColor2
+                elif self.mapContent[i][j] == MapTile.BODY2:
+                    color = GameMap.bodyColor2
                 elif self.mapContent[i][j] == MapTile.APPLE:
                     color = GameMap.appleColor
                 else:
@@ -97,8 +105,8 @@ class GameMap:
         self.mapContent[self.snakes[SnakePlayer.FIRST].x][self.snakes[0].y] = MapTile.HEAD
         if self.gameMode == GameMode.DUAL:
             for part in self.snakes[SnakePlayer.SECOND].bodyParts:
-                self.mapContent[part[0]][part[1]] = MapTile.BODY
-            self.mapContent[self.snakes[SnakePlayer.SECOND].x][self.snakes[SnakePlayer.SECOND].y] = MapTile.HEAD
+                self.mapContent[part[0]][part[1]] = MapTile.BODY2
+            self.mapContent[self.snakes[SnakePlayer.SECOND].x][self.snakes[SnakePlayer.SECOND].y] = MapTile.HEAD2
 
     def checkCollision(self):
         if self.mapContent[self.snakes[SnakePlayer.FIRST].x][self.snakes[SnakePlayer.FIRST].y] == MapTile.WALL or self.snakes[SnakePlayer.FIRST].checkBodyCollision() == True:
